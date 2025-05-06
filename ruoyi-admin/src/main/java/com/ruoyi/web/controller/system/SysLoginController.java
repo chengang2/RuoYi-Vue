@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.ruoyi.common.core.domain.model.SmsLoginBody;
+import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.utils.sms.AliyunSmsUtil;
 import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +47,8 @@ public class SysLoginController
     @Autowired
     private ISysUserService userService;
 
+    @Autowired
+    private AliyunSmsUtil aliyunSmsUtil;
     /**
      * 登录方法
      * 
@@ -62,14 +66,33 @@ public class SysLoginController
         return ajax;
     }
 
+    @PostMapping("/sendSmsCode")
+    public AjaxResult sendSmsCode(@RequestBody SmsLoginBody smsLoginBody) {
+        String phone = smsLoginBody.getPhone();
+        //判断手机号是否存在
+        SysUser user = userService.selectUserByPhone(phone);
+        if (user == null) {
+            return AjaxResult.error("手机号不存在");
+        }
+        return aliyunSmsUtil.sendSmsWithLimit(phone);
+    }
+
+
     @PostMapping("/smsLogin")
     public AjaxResult smsLogin(@RequestBody SmsLoginBody smsLoginBody)
     {
         AjaxResult ajax = AjaxResult.success();
         // 1. 校验验证码
-
+        String phone = smsLoginBody.getPhone();
+        String code = smsLoginBody.getCode();
+        String cacheCode = aliyunSmsUtil.getSmsCode(phone);
+        if (cacheCode == null || !cacheCode.equals(code)) {
+            return AjaxResult.error("验证码错误或已过期");
+        }
+        // 校验通过后，删除验证码
+        aliyunSmsUtil.deleteSmsCode(phone);
         // 2. 查询用户
-        SysUser user = userService.selectUserByPhone(smsLoginBody.getPhone());
+        SysUser user = userService.selectUserByPhone(phone);
         System.out.println("user = " + user);
         if (user == null) {
             return AjaxResult.error("用户不存在");
