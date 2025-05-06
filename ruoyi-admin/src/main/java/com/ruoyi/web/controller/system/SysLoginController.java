@@ -2,6 +2,9 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 import java.util.Set;
+
+import com.ruoyi.common.core.domain.model.SmsLoginBody;
+import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +42,9 @@ public class SysLoginController
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private ISysUserService userService;
+
     /**
      * 登录方法
      * 
@@ -55,6 +61,30 @@ public class SysLoginController
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }
+
+    @PostMapping("/smsLogin")
+    public AjaxResult smsLogin(@RequestBody SmsLoginBody smsLoginBody)
+    {
+        AjaxResult ajax = AjaxResult.success();
+        // 1. 校验验证码
+
+        // 2. 查询用户
+        SysUser user = userService.selectUserByPhone(smsLoginBody.getPhone());
+        System.out.println("user = " + user);
+        if (user == null) {
+            return AjaxResult.error("用户不存在");
+        }
+        // 3. 构造LoginUser
+        LoginUser loginUser = new LoginUser(user.getUserId(), user.getDeptId(), user, permissionService.getMenuPermission(user));
+        System.out.println("loginUser = " + loginUser);
+        // 4. 生成token
+        String token = tokenService.createToken(loginUser);
+        System.out.println("token = " + token);
+        ajax.put(Constants.TOKEN, token);
+        return ajax;
+    }
+
+
 
     /**
      * 获取用户信息
