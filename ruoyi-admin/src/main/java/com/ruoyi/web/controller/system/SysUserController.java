@@ -135,10 +135,10 @@ public class SysUserController extends BaseController
         {
             return error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
         }
-        //else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user))
-        //{
-        //    return error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
-        //}
+        else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user))
+        {
+            return error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+        }
         user.setCreateBy(getUsername());
         user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
         return toAjax(userService.insertUser(user));
@@ -164,10 +164,10 @@ public class SysUserController extends BaseController
         {
             return error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
         }
-        //else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user))
-        //{
-        //    return error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
-        //}
+        else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user))
+        {
+            return error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+        }
         user.setUpdateBy(getUsername());
         return toAjax(userService.updateUser(user));
     }

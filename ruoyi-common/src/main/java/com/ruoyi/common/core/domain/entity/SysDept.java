@@ -49,15 +49,6 @@ public class SysDept extends BaseEntity
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;
 
-    private String address;
-
-    private String description;
-
-    private String additionalInform;
-
-    private String photos;
-
-    private String latLon;
 
     /** 父部门名称 */
     private String parentName;
@@ -192,46 +183,6 @@ public class SysDept extends BaseEntity
     }
 
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getAdditionalInform() {
-        return additionalInform;
-    }
-
-    public void setAdditionalInform(String additionalInform) {
-        this.additionalInform = additionalInform;
-    }
-
-    public String getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(String photos) {
-        this.photos = photos;
-    }
-
-    public String getLatLon() {
-        return latLon;
-    }
-
-    public void setLatLon(String latLon) {
-        this.latLon = latLon;
-    }
-
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -245,11 +196,6 @@ public class SysDept extends BaseEntity
             .append("email", getEmail())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())
-            .append("address", getAddress())
-            .append("description", getDescription())
-            .append("additionalInform", getAdditionalInform())
-            .append("photos", getPhotos())
-            .append("latLon", getLatLon())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
