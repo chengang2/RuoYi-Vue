@@ -16,30 +16,30 @@ public class Certification extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** $column.columnComment */
-    private String id;
+    private Long id;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "认证名称")
     private String name;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
-    private Long deptId;
+    @Excel(name = "企业id")
+    private Long enterpriseId;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "logo")
     private String logo;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "执照")
     private String license;
 
-    public void setId(String id) 
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public String getId() 
+    public Long getId()
     {
         return id;
     }
@@ -54,17 +54,15 @@ public class Certification extends BaseEntity
         return name;
     }
 
-    public void setDeptId(Long deptId) 
-    {
-        this.deptId = deptId;
+    public Long getEnterpriseId() {
+        return enterpriseId;
     }
 
-    public Long getDeptId() 
-    {
-        return deptId;
+    public void setEnterpriseId(Long enterpriseId) {
+        this.enterpriseId = enterpriseId;
     }
 
-    public void setLogo(String logo) 
+    public void setLogo(String logo)
     {
         this.logo = logo;
     }
@@ -89,7 +87,7 @@ public class Certification extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("name", getName())
-            .append("deptId", getDeptId())
+            .append("enterpriseId", getEnterpriseId())
             .append("logo", getLogo())
             .append("license", getLicense())
             .append("createBy", getCreateBy())

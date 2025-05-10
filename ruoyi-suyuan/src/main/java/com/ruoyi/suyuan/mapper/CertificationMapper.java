@@ -20,6 +20,8 @@ public interface CertificationMapper
      */
     public Certification selectCertificationById(String id);
 
+    public Certification selectCertification(Certification certification);
+
     /**
      * 查询【请填写功能名称】列表
      * 
@@ -50,7 +52,7 @@ public interface CertificationMapper
      * @param id 【请填写功能名称】主键
      * @return 结果
      */
-    public int deleteCertificationById(String id);
+    public int deleteCertificationById(Long id);
 
     /**
      * 批量删除【请填写功能名称】
@@ -58,5 +60,5 @@ public interface CertificationMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteCertificationByIds(String[] ids);
+    public int deleteCertificationByIds(Long[] ids);
 }

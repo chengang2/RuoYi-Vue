@@ -3,28 +3,28 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.suyuan.mapper.CertificationMapper">
-    
+
     <resultMap type="Certification" id="CertificationResult">
-        <result property="id"    column="id"    />
-        <result property="name"    column="name"    />
-        <result property="deptId"    column="dept_id"    />
-        <result property="logo"    column="logo"    />
-        <result property="license"    column="license"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="enterpriseId" column="enterprise_id"/>
+        <result property="logo" column="logo"/>
+        <result property="license" column="license"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="selectCertificationVo">
-        select id, name, dept_id, logo, license, create_by, create_time, update_by, update_time from certification
+        select id, name, enterprise_id, logo, license, create_by, create_time, update_by, update_time from certification
     </sql>
 
     <select id="selectCertificationList" parameterType="Certification" resultMap="CertificationResult">
         <include refid="selectCertificationVo"/>
         <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="enterpriseId != null and enterpriseId != ''"> and enterprise_id = #{enterpriseId}</if>
             <if test="logo != null  and logo != ''"> and logo = #{logo}</if>
             <if test="license != null  and license != ''"> and license = #{license}</if>
         </where>
@@ -35,11 +35,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectCertification" parameterType="Certification" resultMap="CertificationResult">
+        <include refid="selectCertificationVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name = #{name}</if>
+            <if test="enterpriseId != null and enterpriseId != ''"> and enterprise_id = #{enterpriseId}</if>
+            <if test="logo != null  and logo != ''"> and logo = #{logo}</if>
+            <if test="license != null  and license != ''"> and license = #{license}</if>
+        </where>
+    </select>
+
     <insert id="insertCertification" parameterType="Certification" useGeneratedKeys="true" keyProperty="id">
         insert into certification
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null">name,</if>
-            <if test="deptId != null">dept_id,</if>
+            <if test="enterpriseId != null">enterprise_id,</if>
             <if test="logo != null">logo,</if>
             <if test="license != null">license,</if>
             <if test="createBy != null">create_by,</if>
@@ -49,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null">#{name},</if>
-            <if test="deptId != null">#{deptId},</if>
+            <if test="enterpriseId != null">#{enterpriseId},</if>
             <if test="logo != null">#{logo},</if>
             <if test="license != null">#{license},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -63,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update certification
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null">name = #{name},</if>
-            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="enterpriseId != null">enterprise_id = #{enterpriseId},</if>
             <if test="logo != null">logo = #{logo},</if>
             <if test="license != null">license = #{license},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
@@ -74,11 +84,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteCertificationById" parameterType="String">
+    <delete id="deleteCertificationById" parameterType="Long">
         delete from certification where id = #{id}
     </delete>
 
-    <delete id="deleteCertificationByIds" parameterType="String">
+    <delete id="deleteCertificationByIds" parameterType="Long">
         delete from certification where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
