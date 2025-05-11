@@ -18,7 +18,7 @@ public interface ICertificationService
      * @param id 【请填写功能名称】主键
      * @return 【请填写功能名称】
      */
-    public Certification selectCertificationById(String id);
+    public Certification selectCertificationById(Integer id);
 
     /**
      * 查询【请填写功能名称】
@@ -58,7 +58,7 @@ public interface ICertificationService
      * @param ids 需要删除的【请填写功能名称】主键集合
      * @return 结果
      */
-    public int deleteCertificationByIds(Long[] ids);
+    public int deleteCertificationByIds(Integer[] ids);
 
     /**
      * 删除【请填写功能名称】信息

@@ -16,7 +16,7 @@ public class Certification extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** $column.columnComment */
-    private Long id;
+    private Integer id;
 
     /** $column.columnComment */
     @Excel(name = "认证名称")
@@ -24,7 +24,7 @@ public class Certification extends BaseEntity
 
     /** $column.columnComment */
     @Excel(name = "企业id")
-    private Long enterpriseId;
+    private Integer enterpriseId;
 
     /** $column.columnComment */
     @Excel(name = "logo")
@@ -34,12 +34,12 @@ public class Certification extends BaseEntity
     @Excel(name = "执照")
     private String license;
 
-    public void setId(Long id)
+    public void setId(Integer id)
     {
         this.id = id;
     }
 
-    public Long getId()
+    public Integer getId()
     {
         return id;
     }
@@ -54,11 +54,11 @@ public class Certification extends BaseEntity
         return name;
     }
 
-    public Long getEnterpriseId() {
+    public Integer getEnterpriseId() {
         return enterpriseId;
     }
 
-    public void setEnterpriseId(Long enterpriseId) {
+    public void setEnterpriseId(Integer enterpriseId) {
         this.enterpriseId = enterpriseId;
     }
 

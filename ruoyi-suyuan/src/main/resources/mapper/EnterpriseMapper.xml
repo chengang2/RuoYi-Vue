@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.EnterpriseMapper">
+    
+    <resultMap type="Enterprise" id="EnterpriseResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="address"    column="address"    />
+        <result property="telephone"    column="telephone"    />
+        <result property="description"    column="description"    />
+        <result property="additionalInformation"    column="additional_information"    />
+        <result property="photos"    column="photos"    />
+        <result property="latLon"    column="lat_lon"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectEnterpriseVo">
+        select id, name, parent_id, address, telephone, description, additional_information, photos, lat_lon, create_by, create_time, update_by, update_time from enterprise
+    </sql>
+
+    <select id="selectEnterpriseList" parameterType="Enterprise" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="telephone != null  and telephone != ''"> and telephone = #{telephone}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="additionalInformation != null  and additionalInformation != ''"> and additional_information = #{additionalInformation}</if>
+            <if test="photos != null  and photos != ''"> and photos = #{photos}</if>
+            <if test="latLon != null  and latLon != ''"> and lat_lon = #{latLon}</if>
+        </where>
+    </select>
+    
+    <select id="selectEnterpriseById" parameterType="Integer" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectEnterpriseByParentId" parameterType="Integer" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        where parent_id = #{id}
+    </select>
+
+    <select id="selectEnterpriseByParentAndSelfId" parameterType="Integer" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        where parent_id = #{id} or id = #{id}
+    </select>
+
+    <select id="selectEnterpriseByZero" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        where parent_id = 0
+    </select>
+
+    <select id="selectEnterpriseByName" parameterType="String" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        where name = #{name}
+    </select>
+
+
+
+
+    <insert id="insertEnterprise" parameterType="Enterprise" useGeneratedKeys="true" keyProperty="id">
+        insert into enterprise
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="address != null">address,</if>
+            <if test="telephone != null">telephone,</if>
+            <if test="description != null">description,</if>
+            <if test="additionalInformation != null">additional_information,</if>
+            <if test="photos != null">photos,</if>
+            <if test="latLon != null">lat_lon,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="address != null">#{address},</if>
+            <if test="telephone != null">#{telephone},</if>
+            <if test="description != null">#{description},</if>
+            <if test="additionalInformation != null">#{additionalInformation},</if>
+            <if test="photos != null">#{photos},</if>
+            <if test="latLon != null">#{latLon},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEnterprise" parameterType="Enterprise">
+        update enterprise
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="telephone != null">telephone = #{telephone},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="additionalInformation != null">additional_information = #{additionalInformation},</if>
+            <if test="photos != null">photos = #{photos},</if>
+            <if test="latLon != null">lat_lon = #{latLon},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEnterpriseById" parameterType="Integer">
+        delete from enterprise where id = #{id}
+    </delete>
+
+    <delete id="deleteEnterpriseByIds" parameterType="Integer">
+        delete from enterprise where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

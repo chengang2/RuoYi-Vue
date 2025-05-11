@@ -24,13 +24,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCertificationVo"/>
         <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="enterpriseId != null and enterpriseId != ''"> and enterprise_id = #{enterpriseId}</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
             <if test="logo != null  and logo != ''"> and logo = #{logo}</if>
             <if test="license != null  and license != ''"> and license = #{license}</if>
         </where>
     </select>
     
-    <select id="selectCertificationById" parameterType="String" resultMap="CertificationResult">
+    <select id="selectCertificationById" parameterType="Integer" resultMap="CertificationResult">
         <include refid="selectCertificationVo"/>
         where id = #{id}
     </select>
@@ -84,11 +84,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteCertificationById" parameterType="Long">
+    <delete id="deleteCertificationById" parameterType="Integer">
         delete from certification where id = #{id}
     </delete>
 
-    <delete id="deleteCertificationByIds" parameterType="Long">
+    <delete id="deleteCertificationByIds" parameterType="Integer">
         delete from certification where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}

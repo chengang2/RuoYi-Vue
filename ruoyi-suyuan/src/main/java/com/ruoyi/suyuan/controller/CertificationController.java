@@ -84,8 +84,11 @@ public class CertificationController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('suyuan:certification:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") String id)
+    public AjaxResult getInfo(@PathVariable("id") Integer id)
     {
+        if (id == null) {
+            return error("id 不能为空");
+        }
         return success(certificationService.selectCertificationById(id));
     }
 
@@ -125,7 +128,7 @@ public class CertificationController extends BaseController
     @PreAuthorize("@ss.hasPermi('suyuan:certification:remove')")
     @Log(title = "认证管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
+    public AjaxResult remove(@PathVariable Integer[] ids)
     {
         return toAjax(certificationService.deleteCertificationByIds(ids));
     }

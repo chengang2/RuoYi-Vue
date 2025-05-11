@@ -28,7 +28,7 @@ public class CertificationServiceImpl implements ICertificationService
      * @return 【请填写功能名称】
      */
     @Override
-    public Certification selectCertificationById(String id)
+    public Certification selectCertificationById(Integer id)
     {
         return certificationMapper.selectCertificationById(id);
     }
@@ -84,7 +84,7 @@ public class CertificationServiceImpl implements ICertificationService
      * @return 结果
      */
     @Override
-    public int deleteCertificationByIds(Long[] ids)
+    public int deleteCertificationByIds(Integer[] ids)
     {
         return certificationMapper.deleteCertificationByIds(ids);
     }
