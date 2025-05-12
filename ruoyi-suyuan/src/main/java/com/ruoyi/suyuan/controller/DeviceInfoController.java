@@ -13,6 +13,8 @@ import com.ruoyi.suyuan.service.IEnterpriseService;
 import com.ruoyi.suyuan.tools.DateFormatUtil;
 import com.ruoyi.suyuan.tools.ShipingTokenUtil;
 import io.jsonwebtoken.lang.Strings;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-05-12
  */
+@Api(tags = "溯源-设备管理")
 @RestController
 @RequestMapping("/suyuan/device")
 public class DeviceInfoController extends BaseController
@@ -58,11 +61,13 @@ public class DeviceInfoController extends BaseController
      * 查询设备管理列表
      */
     @PreAuthorize("@ss.hasPermi('suyuan:device_info:list')")
+    @ApiOperation("获取设备列表,原接口: /device/getAllByPage")
     @GetMapping("/list")
     public TableDataInfo list(DeviceInfoVO deviceInfoVO)
     {
-        startPage();
+
         List<DeviceInfo> list = deviceInfoService.selectDeviceInfoList(deviceInfoVO);
+        startPage();
         List<DeviceListVO> voList = new ArrayList<>();
         for (DeviceInfo device : list) {
             DeviceListVO vo = new DeviceListVO();
@@ -90,6 +95,7 @@ public class DeviceInfoController extends BaseController
      * 获取设备管理详细信息
      */
     @PreAuthorize("@ss.hasPermi('suyuan:device_info:list')")
+    @ApiOperation("获取设备列表,原接口: /device/getAllVoice")
     @GetMapping(value = "/getAllVoice")
     public AjaxResult getAllVoice(DeviceInfoVO deviceInfoVO){
         Map<String, Object> data = new HashMap<>();
@@ -134,6 +140,7 @@ public class DeviceInfoController extends BaseController
      * 获取设备管理详细信息
      */
     @PreAuthorize("@ss.hasPermi('suyuan:device_info:list')")
+    @ApiOperation("获取设备列表,原接口: /device/getAllMonitor")
     @GetMapping(value = "/getAllMonitor")
     public AjaxResult getAllMonitor(DeviceInfoVO deviceInfoVO){
         Map<String, Object> data = new HashMap<>();
@@ -188,6 +195,7 @@ public class DeviceInfoController extends BaseController
      * 获取设备管理详细信息
      */
     @PreAuthorize("@ss.hasPermi('suyuan:device_info:query')")
+    @ApiOperation("获取设备详情,原接口: /device/get")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Integer id)
     {
@@ -263,6 +271,7 @@ public class DeviceInfoController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('suyuan:device_info:add')")
     @Log(title = "设备管理", businessType = BusinessType.INSERT)
+    @ApiOperation("新增设备,原接口: /device/create")
     @PostMapping
     public AjaxResult add(@RequestBody DeviceInfo deviceInfo)
     {
@@ -305,6 +314,7 @@ public class DeviceInfoController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('suyuan:device_info:edit')")
     @Log(title = "设备管理", businessType = BusinessType.UPDATE)
+    @ApiOperation("修改设备,原接口: /device/update")
     @PutMapping
     public AjaxResult edit(@RequestBody DeviceInfo deviceInfo)
     {
@@ -316,12 +326,14 @@ public class DeviceInfoController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('suyuan:device_info:remove')")
     @Log(title = "设备管理", businessType = BusinessType.DELETE)
+    @ApiOperation("删除设备,多个id之间用逗号隔开。原接口: /device/delete")
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Integer[] ids)
     {
         return toAjax(deviceInfoService.deleteDeviceInfoByIds(ids));
     }
 
+    @ApiOperation("前端新增设备。原接口: /device/monitor_info")
     @PostMapping("/monitor_info")
     public AjaxResult addMonitorInfo(@RequestBody MonitorInfo monitorInfo){
 
@@ -334,6 +346,7 @@ public class DeviceInfoController extends BaseController
 
     }
 
+    @ApiOperation("前端获取设备详情。原接口: /device/get_detail")
     @GetMapping("/get_detail/{enterpriseId}")
     public AjaxResult getDetall(@PathVariable("enterpriseId") Integer enterpriseId){
         Map<String, Object> data = new HashMap<>();

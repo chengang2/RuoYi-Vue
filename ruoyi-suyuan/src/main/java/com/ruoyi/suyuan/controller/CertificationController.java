@@ -9,6 +9,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.suyuan.domain.Certification;
 import com.ruoyi.suyuan.service.ICertificationService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +27,7 @@ import java.util.Map;
  * @author ruoyi
  * @date 2025-05-07
  */
+@Api(tags = "溯源-认证管理")
 @RestController
 @RequestMapping("/suyuan/certification")
 public class CertificationController extends BaseController
@@ -33,23 +35,11 @@ public class CertificationController extends BaseController
     @Autowired
     private ICertificationService certificationService;
 
-    //@ApiOperation("获取用户列表111")
-    //@GetMapping("/list1")
-    //public R<List<String>> userList()
-    //{
-    //    Map<Integer, String> users = new LinkedHashMap<Integer, String>();
-    //    {
-    //        users.put(1, "15888888888");
-    //        users.put(2, "15666666666");
-    //    }
-    //    List<String> userList = new ArrayList<String>(users.values());
-    //    return R.ok(userList);
-    //}
-
     /**
      * 查询认证列表
      */
     @PreAuthorize("@ss.hasPermi('suyuan:certification:list')")
+    @ApiOperation("获取认证列表,原接口: /certification/getAllByPage")
     @GetMapping("/list")
     public TableDataInfo list(Certification certification)
     {
@@ -59,6 +49,7 @@ public class CertificationController extends BaseController
     }
 
     @PreAuthorize("@ss.hasPermi('suyuan:certification:getAll')")
+    @ApiOperation("获取认证列表,原接口: /certification/getAll")
     @GetMapping("/getAll")
     public AjaxResult getAll(Certification certification)
     {
@@ -83,6 +74,7 @@ public class CertificationController extends BaseController
      * 获取认证详细信息
      */
     @PreAuthorize("@ss.hasPermi('suyuan:certification:query')")
+    @ApiOperation("获取认证详情,原接口: /certification/get")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Integer id)
     {
@@ -97,6 +89,7 @@ public class CertificationController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('suyuan:certification:add')")
     @Log(title = "认证管理", businessType = BusinessType.INSERT)
+    @ApiOperation("新增认证,原接口: /certification/create")
     @PostMapping
     public AjaxResult add(@RequestBody Certification certification)
     {
@@ -116,6 +109,7 @@ public class CertificationController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('suyuan:certification:edit')")
     @Log(title = "认证管理", businessType = BusinessType.UPDATE)
+    @ApiOperation("修改认证,原接口: /certification/update")
     @PutMapping
     public AjaxResult edit(@RequestBody Certification certification)
     {
@@ -127,6 +121,7 @@ public class CertificationController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('suyuan:certification:remove')")
     @Log(title = "认证管理", businessType = BusinessType.DELETE)
+    @ApiOperation("删除认证,多个id之间用逗号隔开。原接口: /certification/delete")
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Integer[] ids)
     {

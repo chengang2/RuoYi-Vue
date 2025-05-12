@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.suyuan.domain.DeviceInfo;
 import com.ruoyi.suyuan.service.IDeviceInfoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +35,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-05-10
  */
+@Api(tags = "溯源-企业管理")
 @RestController
 @RequestMapping("/suyuan/enterprise")
 public class EnterpriseController extends BaseController
@@ -46,6 +49,7 @@ public class EnterpriseController extends BaseController
      * 查询企业管理列表
      */
     @PreAuthorize("@ss.hasPermi('suyuan:enterprise:list')")
+    @ApiOperation("获取企业列表,原接口: /enterprise/getAllByPage")
     @GetMapping("/list")
     public TableDataInfo list(Enterprise enterprise)
     {
@@ -58,6 +62,7 @@ public class EnterpriseController extends BaseController
      * 获取企业管理列表
      */
     @PreAuthorize("@ss.hasPermi('suyuan:enterprise:list')")
+    @ApiOperation("获取企业列表,原接口: /enterprise/getAll")
     @GetMapping(value = "/getAll/{parentId}")
     public AjaxResult getChildrenInfo(@PathVariable("parentId") Integer parentId)
     {
@@ -67,6 +72,7 @@ public class EnterpriseController extends BaseController
      * 获取企业管理列表
      */
     @PreAuthorize("@ss.hasPermi('suyuan:enterprise:list')")
+    @ApiOperation("获取企业列表,原接口: /enterprise/all")
     @GetMapping(value = "/all/{parentId}")
     public AjaxResult getAll(@PathVariable("parentId") Integer parentId)
     {
@@ -103,6 +109,7 @@ public class EnterpriseController extends BaseController
      * 获取企业管理列表
      */
     @PreAuthorize("@ss.hasPermi('suyuan:enterprise:list')")
+    @ApiOperation("获取企业列表,原接口: /enterprise/getAlls")
     @GetMapping(value = "/getAlls/{id}")
     public AjaxResult getAllInfo(@PathVariable("id") Integer id)
     {
@@ -112,6 +119,7 @@ public class EnterpriseController extends BaseController
      * 获取企业管理列表
      */
     @PreAuthorize("@ss.hasPermi('suyuan:enterprise:list')")
+    @ApiOperation("获取企业列表,原接口: /enterprise/getParent")
     @GetMapping(value = "/getParent")
     public AjaxResult getParent()
     {
@@ -135,6 +143,7 @@ public class EnterpriseController extends BaseController
      * 获取企业管理详细信息
      */
     @PreAuthorize("@ss.hasPermi('suyuan:enterprise:query')")
+    @ApiOperation("获取企业详情,原接口: /enterprise/get")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Integer id)
     {
@@ -147,6 +156,7 @@ public class EnterpriseController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('suyuan:enterprise:add')")
     @Log(title = "企业管理", businessType = BusinessType.INSERT)
+    @ApiOperation("新增企业,原接口: /enterprise/create")
     @PostMapping
     public AjaxResult add(@RequestBody Enterprise enterprise)
     {
@@ -163,6 +173,7 @@ public class EnterpriseController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('suyuan:enterprise:edit')")
     @Log(title = "企业管理", businessType = BusinessType.UPDATE)
+    @ApiOperation("修改企业,原接口: /enterprise/update")
     @PutMapping
     public AjaxResult edit(@RequestBody Enterprise enterprise)
     {
@@ -174,6 +185,7 @@ public class EnterpriseController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('suyuan:enterprise:remove')")
     @Log(title = "企业管理", businessType = BusinessType.DELETE)
+    @ApiOperation("删除企业，多个id之间用逗号隔开,原接口: /enterprise/delete")
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Integer[] ids)
     {
