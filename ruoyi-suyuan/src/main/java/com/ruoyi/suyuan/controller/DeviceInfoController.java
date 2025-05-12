@@ -246,14 +246,14 @@ public class DeviceInfoController extends BaseController
         }
         // 5. 组装返回数据
         data.put("id", deviceInfo.getId());
-        data.put("deviceAddress", deviceInfo.getDeviceAddress());
+        data.put("device_address", deviceInfo.getDeviceAddress());
         data.put("status", deviceInfo.getStatus());
-        data.put("enterpriseName", enterpriseName);
-        data.put("voiceItems", voiceItems);
-        data.put("monitorItems", monitorItems);
-        data.put("latLon", deviceInfo.getLatLon());
-        data.put("createTime", DateFormatUtil.format(deviceInfo.getCreateTime()));
-        data.put("updateTime", DateFormatUtil.format(deviceInfo.getUpdateTime()));
+        data.put("enterprise_name", enterpriseName);
+        data.put("voice_items", voiceItems);
+        data.put("monitor_items", monitorItems);
+        data.put("lat_lon", deviceInfo.getLatLon());
+        data.put("createtime", DateFormatUtil.format(deviceInfo.getCreateTime()));
+        data.put("updatetime", DateFormatUtil.format(deviceInfo.getUpdateTime()));
 
         return success(data);
     }
@@ -322,5 +322,92 @@ public class DeviceInfoController extends BaseController
         return toAjax(deviceInfoService.deleteDeviceInfoByIds(ids));
     }
 
+    @PostMapping("/monitor_info")
+    public AjaxResult addMonitorInfo(@RequestBody MonitorInfo monitorInfo){
+
+        DeviceMonitor deviceMonitor = new DeviceMonitor();
+        deviceMonitor.setDeviceId(monitorInfo.getDeviceId());
+        deviceMonitor.setDatas(monitorInfo.getDatas());
+        deviceMonitor.setDate(monitorInfo.getDate());
+
+        return toAjax(deviceMonitorService.insertDeviceMonitor(deviceMonitor));
+
+    }
+
+    @GetMapping("/get_detail/{enterpriseId}")
+    public AjaxResult getDetall(@PathVariable("enterpriseId") Integer enterpriseId){
+        Map<String, Object> data = new HashMap<>();
+
+        DeviceInfoVO deviceInfo = new DeviceInfoVO();
+        deviceInfo.setEnterpriseId(enterpriseId);
+        List<DeviceInfo> deviceInfos = deviceInfoService.selectDeviceInfoList(deviceInfo);
+        List<Map<String, Object>> items = new ArrayList<>();
+        for(DeviceInfo device : deviceInfos){
+            Map<String, Object> item = new HashMap<>();
+            Integer eid = device.getEnterpriseId();
+
+            Enterprise enterprise = enterpriseService.selectEnterpriseById(eid);
+            String enterpriseName = enterprise.getName();
+
+            // 3. 语音设备信息
+            List<Map<String, Object>> voiceItems = new ArrayList<>();
+            String voiceDeviceIds = device.getVoiceDeviceIds();
+            System.out.println("voiceDeviceIds = " + voiceDeviceIds);
+            if (voiceDeviceIds != null && !voiceDeviceIds.isEmpty()) {
+                for (String voiceDeviceId : voiceDeviceIds.split(",")) {
+                    DeviceVoiceVO deviceVoice = new DeviceVoiceVO();
+                    deviceVoice.setVoiceDeviceSerial(voiceDeviceId);
+                    List<DeviceVoice> deviceVoices = deviceVoiceService.selectDeviceVoiceList(deviceVoice);
+                    System.out.println("deviceVoices.size() = " + deviceVoices.size());
+                    for (DeviceVoice v : deviceVoices) {
+                        String tokenResult = shipingTokenUtil.getShipingToken();
+                        JsonNode tokenJson = null;
+                        try {
+                            tokenJson = objectMapper.readTree(tokenResult);
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                        String voiceToken = tokenJson.path("data").path("accessToken").asText();
+                        Map<String, Object> voiceItem = new HashMap<>();
+                        voiceItem.put("voice_device_serial", v.getVoiceDeviceSerial());
+                        voiceItem.put("voice_url", v.getVoiceUrl());
+                        voiceItem.put("voice_token", voiceToken);
+                        voiceItems.add(voiceItem);
+                    }
+                }
+            }
+            // 4. 监控设备信息
+            List<Map<String, Object>> monitorItems = new ArrayList<>();
+            String monitorDeviceIds = device.getMonitorDeviceIds();
+            if (monitorDeviceIds != null && !monitorDeviceIds.isEmpty()) {
+                for (String monitorId : monitorDeviceIds.split(",")) {
+                    DeviceMonitor monitor = deviceMonitorService.selectDeviceMonitorByDeviceId(monitorId);
+                    if (monitor != null) {
+                        Map<String, Object> monitorItem = new HashMap<>();
+                        monitorItem.put("device_id", monitor.getDeviceId());
+                        monitorItem.put("datas", monitor.getDatas());
+                        monitorItem.put("date", monitor.getDate());
+                        monitorItems.add(monitorItem);
+                    }
+                }
+            }
+            // 5. 组装返回数据
+            item.put("id", device.getId());
+            item.put("device_address", device.getDeviceAddress());
+            item.put("status", device.getStatus());
+            item.put("enterprise_name", enterpriseName);
+            item.put("voice_items", voiceItems);
+            item.put("monitor_items", monitorItems);
+            item.put("lat_lon", device.getLatLon());
+            item.put("createtime", DateFormatUtil.format(device.getCreateTime()));
+            item.put("updatetime", DateFormatUtil.format(device.getUpdateTime()));
+
+            items.add(item);
+        }
+
+        data.put("items",items);
+
+        return success(data);
+    }
 
 }
