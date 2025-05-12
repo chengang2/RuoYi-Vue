@@ -61,8 +61,9 @@ public class DeviceInfoController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(DeviceInfoVO deviceInfoVO)
     {
-        startPage();
+
         List<DeviceInfo> list = deviceInfoService.selectDeviceInfoList(deviceInfoVO);
+        startPage();
         List<DeviceListVO> voList = new ArrayList<>();
         for (DeviceInfo device : list) {
             DeviceListVO vo = new DeviceListVO();

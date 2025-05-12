@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.ProductCategoryMapper">
+    
+    <resultMap type="ProductCategory" id="ProductCategoryResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="enterpriseId"    column="enterprise_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectProductCategoryVo">
+        select id, name, enterprise_id, create_by, create_time, update_by, update_time from productcategory
+    </sql>
+
+    <select id="selectProductCategoryList" parameterType="ProductCategory" resultMap="ProductCategoryResult">
+        <include refid="selectProductCategoryVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+        </where>
+    </select>
+    
+    <select id="selectProductCategoryById" parameterType="Integer" resultMap="ProductCategoryResult">
+        <include refid="selectProductCategoryVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectProductCategory" parameterType="ProductCategory" resultMap="ProductCategoryResult">
+        <include refid="selectProductCategoryVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name = #{name}</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+        </where>
+        limit 1
+    </select>
+
+    <insert id="insertProductCategory" parameterType="ProductCategory" useGeneratedKeys="true" keyProperty="id">
+        insert into productcategory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="enterpriseId != null">enterprise_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="enterpriseId != null">#{enterpriseId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProductCategory" parameterType="ProductCategory">
+        update productcategory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="enterpriseId != null">enterprise_id = #{enterpriseId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProductCategoryById" parameterType="Integer">
+        delete from productcategory where id = #{id}
+    </delete>
+
+    <delete id="deleteProductCategoryByIds" parameterType="Integer">
+        delete from productcategory where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
