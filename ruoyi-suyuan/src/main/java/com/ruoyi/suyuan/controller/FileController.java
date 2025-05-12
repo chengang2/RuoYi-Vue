@@ -3,6 +3,7 @@ package com.ruoyi.suyuan.controller;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.suyuan.tools.ImageCompressor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class FileController extends BaseController {
     @Value("${suyuan.uploadPath}")
     private String uploadPath;
 
+    @PreAuthorize("@ss.hasPermi('suyuan:file:upload_image')")
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         long MAX_FILE_SIZE = 1 << 20;
@@ -80,6 +82,7 @@ public class FileController extends BaseController {
         return ResponseEntity.ok(createResponse(code, msg, data));
     }
 
+    @PreAuthorize("@ss.hasPermi('suyuan:file:upload_voice')")
     @PostMapping("/upload_voice")
     public ResponseEntity<?> uploadVoice(@RequestParam("file") MultipartFile file) {
         long MAX_FILE_SIZE = 5 << 20;

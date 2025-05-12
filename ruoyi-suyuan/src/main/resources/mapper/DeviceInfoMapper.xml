@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.DeviceInfoMapper">
+    
+    <resultMap type="DeviceInfo" id="DeviceInfoResult">
+        <result property="id"    column="id"    />
+        <result property="deviceAddress"    column="device_address"    />
+        <result property="enterpriseId"    column="enterprise_id"    />
+        <result property="monitorDeviceIds"    column="monitor_device_ids"    />
+        <result property="voiceDeviceIds"    column="voice_device_ids"    />
+        <result property="latLon"    column="lat_lon"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDeviceInfoVo">
+        select id, device_address, enterprise_id, monitor_device_ids, voice_device_ids, lat_lon, status, create_by, create_time, update_by, update_time from device_info
+    </sql>
+
+    <select id="selectDeviceInfoList" parameterType="DeviceInfoVO" resultMap="DeviceInfoResult">
+        <include refid="selectDeviceInfoVo"/>
+        <where>  
+            <if test="deviceAddress != null  and deviceAddress != ''"> and device_address = #{deviceAddress}</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+            <if test="monitorDeviceIds != null  and monitorDeviceIds != ''"> and monitor_device_ids = #{monitorDeviceIds}</if>
+            <if test="voiceDeviceIds != null  and voiceDeviceIds != ''"> and voice_device_ids = #{voiceDeviceIds}</if>
+            <if test="monitorDeviceId != null  and monitorDeviceId != ''"> and monitor_device_ids like concat('%', #{monitorDeviceId}, '%')</if>
+            <if test="voiceDeviceId != null  and voiceDeviceId != ''"> and voice_device_ids like concat('%', #{voiceDeviceId}, '%')</if>
+            <if test="latLon != null  and latLon != ''"> and lat_lon = #{latLon}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectDeviceInfoById" parameterType="Integer" resultMap="DeviceInfoResult">
+        <include refid="selectDeviceInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDeviceInfoByEnterpriseId" parameterType="Integer" resultMap="DeviceInfoResult">
+        <include refid="selectDeviceInfoVo"/>
+        where enterprise_id = #{enterpriseId} limit 1
+    </select>
+
+    <insert id="insertDeviceInfo" parameterType="DeviceInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into device_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceAddress != null">device_address,</if>
+            <if test="enterpriseId != null">enterprise_id,</if>
+            <if test="monitorDeviceIds != null">monitor_device_ids,</if>
+            <if test="voiceDeviceIds != null">voice_device_ids,</if>
+            <if test="latLon != null">lat_lon,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceAddress != null">#{deviceAddress},</if>
+            <if test="enterpriseId != null">#{enterpriseId},</if>
+            <if test="monitorDeviceIds != null">#{monitorDeviceIds},</if>
+            <if test="voiceDeviceIds != null">#{voiceDeviceIds},</if>
+            <if test="latLon != null">#{latLon},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDeviceInfo" parameterType="DeviceInfo">
+        update device_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceAddress != null">device_address = #{deviceAddress},</if>
+            <if test="enterpriseId != null">enterprise_id = #{enterpriseId},</if>
+            <if test="monitorDeviceIds != null">monitor_device_ids = #{monitorDeviceIds},</if>
+            <if test="voiceDeviceIds != null">voice_device_ids = #{voiceDeviceIds},</if>
+            <if test="latLon != null">lat_lon = #{latLon},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDeviceInfoById" parameterType="Integer">
+        delete from device_info where id = #{id}
+    </delete>
+
+    <delete id="deleteDeviceInfoByIds" parameterType="Integer">
+        delete from device_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

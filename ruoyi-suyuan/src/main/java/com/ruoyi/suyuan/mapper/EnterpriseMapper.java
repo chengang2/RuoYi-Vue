@@ -19,7 +19,7 @@ public interface EnterpriseMapper
      */
     public Enterprise selectEnterpriseById(Integer id);
 
-    public List<Enterprise> selectEnterpriseByParentId(Integer id);
+    public List<Enterprise> selectEnterpriseByParentId(Integer parentId);
 
     public List<Enterprise> selectEnterpriseByParentAndSelfId(Integer id);
 

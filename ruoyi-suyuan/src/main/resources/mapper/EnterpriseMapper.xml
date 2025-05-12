@@ -45,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectEnterpriseByParentId" parameterType="Integer" resultMap="EnterpriseResult">
         <include refid="selectEnterpriseVo"/>
-        where parent_id = #{id}
+        where parent_id = #{parentId}
     </select>
 
     <select id="selectEnterpriseByParentAndSelfId" parameterType="Integer" resultMap="EnterpriseResult">

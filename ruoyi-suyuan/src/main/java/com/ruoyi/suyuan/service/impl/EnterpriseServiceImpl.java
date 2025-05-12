@@ -38,8 +38,8 @@ public class EnterpriseServiceImpl implements IEnterpriseService
     }
 
     @Override
-    public List<Enterprise> selectEnterpriseByParentId(Integer id) {
-        return enterpriseMapper.selectEnterpriseByParentId(id);
+    public List<Enterprise> selectEnterpriseByParentId(Integer parentId) {
+        return enterpriseMapper.selectEnterpriseByParentId(parentId);
     }
 
     @Override

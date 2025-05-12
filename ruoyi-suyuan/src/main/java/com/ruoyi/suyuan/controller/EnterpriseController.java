@@ -1,7 +1,13 @@
 package com.ruoyi.suyuan.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.suyuan.domain.DeviceInfo;
+import com.ruoyi.suyuan.service.IDeviceInfoService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +39,8 @@ public class EnterpriseController extends BaseController
 {
     @Autowired
     private IEnterpriseService enterpriseService;
+    @Autowired
+    private IDeviceInfoService deviceInfoService;
 
     /**
      * 查询企业管理列表
@@ -50,10 +58,45 @@ public class EnterpriseController extends BaseController
      * 获取企业管理列表
      */
     @PreAuthorize("@ss.hasPermi('suyuan:enterprise:list')")
-    @GetMapping(value = "/getAll/{id}")
-    public AjaxResult getChildrenInfo(@PathVariable("id") Integer id)
+    @GetMapping(value = "/getAll/{parentId}")
+    public AjaxResult getChildrenInfo(@PathVariable("parentId") Integer parentId)
     {
-        return success(enterpriseService.selectEnterpriseByParentId(id));
+        return success(enterpriseService.selectEnterpriseByParentId(parentId));
+    }
+    /**
+     * 获取企业管理列表
+     */
+    @PreAuthorize("@ss.hasPermi('suyuan:enterprise:list')")
+    @GetMapping(value = "/all/{parentId}")
+    public AjaxResult getAll(@PathVariable("parentId") Integer parentId)
+    {
+        Map<String, Object> data = new HashMap<>();
+        List<Map<String, Object>> items = new ArrayList<>();
+        List<Enterprise> enterprises = enterpriseService.selectEnterpriseByParentId(parentId);
+        for (Enterprise enterprise: enterprises){
+            Map<String, Object> item = new HashMap<>();
+
+            Integer eId = enterprise.getId();
+            DeviceInfo deviceInfo = deviceInfoService.selectDeviceInfoByEnterpriseId(eId);
+            if(deviceInfo != null && deviceInfo.getId() > 0) {
+                item.put("enterprise_address",deviceInfo.getDeviceAddress());
+                item.put("device_lat_lon",deviceInfo.getLatLon());
+                item.put("device_monitor",1);
+            }else{
+                item.put("enterprise_address",enterprise.getAddress());
+                item.put("device_lat_lon","");
+                item.put("device_monitor",0);
+            }
+            item.put("id",eId);
+            item.put("parent_id",enterprise.getParentId());
+            item.put("enterprise_name",enterprise.getName());
+            item.put("lat_lon",enterprise.getLatLon());
+
+            items.add(item);
+        }
+        data.put("items",items);
+
+        return success(data);
     }
 
     /**
@@ -73,16 +116,6 @@ public class EnterpriseController extends BaseController
     public AjaxResult getParent()
     {
         return success(enterpriseService.selectEnterpriseByZero());
-    }
-    /**
-     * 获取企业管理列表
-     */
-    @PreAuthorize("@ss.hasPermi('suyuan:enterprise:list')")
-    @GetMapping(value = "/all")
-    public AjaxResult getAll()
-    {
-        //todo
-        return success("todo");
     }
 
     ///**

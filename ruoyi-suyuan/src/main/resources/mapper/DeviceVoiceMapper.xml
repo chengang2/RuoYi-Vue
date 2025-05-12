@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.DeviceVoiceMapper">
+    
+    <resultMap type="DeviceVoice" id="DeviceVoiceResult">
+        <result property="id"    column="id"    />
+        <result property="voiceDeviceSerial"    column="voice_device_serial"    />
+        <result property="voiceUrl"    column="voice_url"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDeviceVoiceVo">
+        select id, voice_device_serial, voice_url, create_by, create_time, update_by, update_time from device_voice
+    </sql>
+
+    <select id="selectDeviceVoiceList" parameterType="DeviceVoiceVO" resultMap="DeviceVoiceResult">
+        <include refid="selectDeviceVoiceVo"/>
+        <where>  
+            <if test="voiceDeviceSerial != null  and voiceDeviceSerial != ''"> and voice_device_serial = #{voiceDeviceSerial}</if>
+            <if test="voiceDeviceSerials != null and voiceDeviceSerials.size() > 0"> and voice_device_serial in
+                <foreach item="voiceDeviceSerial" collection="voiceDeviceSerials" open="(" separator="," close=")">
+                    #{voiceDeviceSerial}
+                </foreach>
+            </if>
+            <if test="voiceUrl != null  and voiceUrl != ''"> and voice_url = #{voiceUrl}</if>
+        </where>
+    </select>
+    
+    <select id="selectDeviceVoiceById" parameterType="Long" resultMap="DeviceVoiceResult">
+        <include refid="selectDeviceVoiceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDeviceVoice" parameterType="DeviceVoice" useGeneratedKeys="true" keyProperty="id">
+        insert into device_voice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="voiceDeviceSerial != null">voice_device_serial,</if>
+            <if test="voiceUrl != null">voice_url,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="voiceDeviceSerial != null">#{voiceDeviceSerial},</if>
+            <if test="voiceUrl != null">#{voiceUrl},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDeviceVoice" parameterType="DeviceVoice">
+        update device_voice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="voiceDeviceSerial != null">voice_device_serial = #{voiceDeviceSerial},</if>
+            <if test="voiceUrl != null">voice_url = #{voiceUrl},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDeviceVoiceById" parameterType="Long">
+        delete from device_voice where id = #{id}
+    </delete>
+
+    <delete id="deleteDeviceVoiceByIds" parameterType="String">
+        delete from device_voice where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

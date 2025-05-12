@@ -21,7 +21,7 @@ public interface IEnterpriseService
 
     public Enterprise selectEnterpriseByName(String name);
 
-    public List<Enterprise> selectEnterpriseByParentId(Integer id);
+    public List<Enterprise> selectEnterpriseByParentId(Integer parentId);
 
     public List<Enterprise> selectEnterpriseByParentAndSelfId(Integer id);
 
