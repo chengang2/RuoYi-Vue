@@ -67,7 +67,7 @@ public class DeviceInfoController extends BaseController
     {
 
         List<DeviceInfo> list = deviceInfoService.selectDeviceInfoList(deviceInfoVO);
-        startPage();
+        //startPage();
         List<DeviceListVO> voList = new ArrayList<>();
         for (DeviceInfo device : list) {
             DeviceListVO vo = new DeviceListVO();

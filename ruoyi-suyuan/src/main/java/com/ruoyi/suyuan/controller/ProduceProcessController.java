@@ -64,7 +64,7 @@ public class ProduceProcessController extends BaseController
             ProduceProcessList produceProcessList = new ProduceProcessList();
             produceProcessList.setEnterpriseIds(enterpriseIds);
             List<ProduceProcess> list = produceProcessService.selectProduceProcessList(produceProcessList);
-            startPage();
+            //startPage();
             List<Map<String,Object>> produceProcessLists = new ArrayList<>();
             for (ProduceProcess produceProcess1 : list) {
                 Map<String,Object> item = new HashMap<>();
@@ -213,7 +213,7 @@ public class ProduceProcessController extends BaseController
         if (i > 0) {
             Integer pId = produceProcess.getId();
             ProduceProcessStep[] items = produceProcessVO.getItems();
-            if(items.length > 0){
+            if(items != null && items.length > 0){
                 for (int j = 0; j < items.length; j++) {
                     ProduceProcessStep item = items[j];
                     ProduceProcessStep produceProcessStep = new ProduceProcessStep();
@@ -257,7 +257,7 @@ public class ProduceProcessController extends BaseController
         int i = produceProcessService.updateProduceProcess(produceProcess);
         if (i > 0) {
             ProduceProcessStep[] items = produceProcessVO.getItems();
-            if(items.length > 0){
+            if(items != null && items.length > 0){
                 int i1 = produceProcessStepService.deleteProduceProcessStepByPid(pId);
                 if(i1 > 0){
                     for (int j = 0; j < items.length; j++) {
@@ -287,7 +287,7 @@ public class ProduceProcessController extends BaseController
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Integer[] ids)
     {
-        if (ids.length > 0) {
+        if (ids != null && ids.length > 0) {
             int i = produceProcessStepService.deleteProduceProcessStepByPids(ids);
             if (i > 0) {
                 return toAjax(produceProcessService.deleteProduceProcessByIds(ids));

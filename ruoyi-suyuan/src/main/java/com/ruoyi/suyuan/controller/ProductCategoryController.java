@@ -53,10 +53,8 @@ public class ProductCategoryController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(ProductCategory productCategory)
     {
-
-        Map<String,Object> data = new HashMap<>();
         List<ProductCategory> list = productCategoryService.selectProductCategoryList(productCategory);
-        startPage();
+        //startPage();
         List<Map<String,Object>> items = new ArrayList<>();
         for (ProductCategory productCategory1 : list) {
             Map<String,Object> item = new HashMap<>();

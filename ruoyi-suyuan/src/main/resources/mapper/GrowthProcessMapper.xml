@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.GrowthProcessMapper">
+    
+    <resultMap type="GrowthProcess" id="GrowthProcessResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="enterpriseId"    column="enterprise_id"    />
+        <result property="productCategoryId"    column="product_category_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectGrowthProcessVo">
+        select id, name, enterprise_id, product_category_id, create_by, create_time, update_by, update_time from growthprocess
+    </sql>
+
+    <select id="selectGrowthProcessList" parameterType="GrowthProcessList" resultMap="GrowthProcessResult">
+        <include refid="selectGrowthProcessVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+            <if test="enterpriseIds != null and enterpriseIds.size() > 0"> and enterprise_id in
+                <foreach item="enterpriseId" collection="enterpriseIds" open="(" separator="," close=")">
+                    #{enterpriseId}
+                </foreach>
+            </if>
+            <if test="productCategoryId != null "> and product_category_id = #{productCategoryId}</if>
+        </where>
+    </select>
+    
+    <select id="selectGrowthProcessById" parameterType="Integer" resultMap="GrowthProcessResult">
+        <include refid="selectGrowthProcessVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectGrowthProcess" parameterType="GrowthProcess" resultMap="GrowthProcessResult">
+        <include refid="selectGrowthProcessVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name = #{name}</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+        </where>
+        limit 1
+    </select>
+
+    <insert id="insertGrowthProcess" parameterType="GrowthProcess" useGeneratedKeys="true" keyProperty="id">
+        insert into growthprocess
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="enterpriseId != null">enterprise_id,</if>
+            <if test="productCategoryId != null">product_category_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="enterpriseId != null">#{enterpriseId},</if>
+            <if test="productCategoryId != null">#{productCategoryId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGrowthProcess" parameterType="GrowthProcess">
+        update growthprocess
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="enterpriseId != null">enterprise_id = #{enterpriseId},</if>
+            <if test="productCategoryId != null">product_category_id = #{productCategoryId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGrowthProcessById" parameterType="Integer">
+        delete from growthprocess where id = #{id}
+    </delete>
+
+    <delete id="deleteGrowthProcessByIds" parameterType="Integer">
+        delete from growthprocess where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
