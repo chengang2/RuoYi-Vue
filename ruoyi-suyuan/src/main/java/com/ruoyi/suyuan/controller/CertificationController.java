@@ -27,7 +27,7 @@ import java.util.Map;
  * @author ruoyi
  * @date 2025-05-07
  */
-@Api(tags = "溯源-认证管理")
+@Api(tags = "溯源模块-认证管理")
 @RestController
 @RequestMapping("/suyuan/certification")
 public class CertificationController extends BaseController

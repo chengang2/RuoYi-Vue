@@ -40,7 +40,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-05-12
  */
-@Api(tags = "溯源-设备管理")
+@Api(tags = "溯源模块-设备管理")
 @RestController
 @RequestMapping("/suyuan/device")
 public class DeviceInfoController extends BaseController

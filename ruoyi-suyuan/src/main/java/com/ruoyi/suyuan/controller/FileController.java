@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Api(tags = "溯源-文件管理")
+@Api(tags = "溯源模块-文件管理")
 @RestController
 @RequestMapping("/suyuan/file")
 public class FileController extends BaseController {

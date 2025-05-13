@@ -35,7 +35,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-05-13
  */
-@Api(tags = "溯源-产品类别管理")
+@Api(tags = "溯源模块-产品类别管理")
 @RestController
 @RequestMapping("/suyuan/productcategory")
 public class ProductCategoryController extends BaseController

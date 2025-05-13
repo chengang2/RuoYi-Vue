@@ -35,7 +35,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  * @date 2025-05-10
  */
-@Api(tags = "溯源-企业管理")
+@Api(tags = "溯源模块-企业管理")
 @RestController
 @RequestMapping("/suyuan/enterprise")
 public class EnterpriseController extends BaseController
