@@ -212,7 +212,6 @@ public class ProduceProcessController extends BaseController
         int i = produceProcessService.insertProduceProcess(produceProcess);
         if (i > 0) {
             Integer pId = produceProcess.getId();
-            System.out.println("produceProcess.getId() = " + pId);
             ProduceProcessStep[] items = produceProcessVO.getItems();
             if(items.length > 0){
                 for (int j = 0; j < items.length; j++) {
