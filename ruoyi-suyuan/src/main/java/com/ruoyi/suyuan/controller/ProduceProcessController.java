@@ -65,7 +65,7 @@ public class ProduceProcessController extends BaseController
             produceProcessList.setEnterpriseIds(enterpriseIds);
             List<ProduceProcess> list = produceProcessService.selectProduceProcessList(produceProcessList);
             startPage();
-            List<Map<String,Object>> ProduceProcessList = new ArrayList<>();
+            List<Map<String,Object>> produceProcessLists = new ArrayList<>();
             for (ProduceProcess produceProcess1 : list) {
                 Map<String,Object> item = new HashMap<>();
                 Integer id = produceProcess1.getId();
@@ -84,10 +84,10 @@ public class ProduceProcessController extends BaseController
                 item.put("createTime", DateFormatUtil.format(produceProcess1.getCreateTime()));
                 item.put("updateTime", DateFormatUtil.format(produceProcess1.getUpdateTime()));
 
-                ProduceProcessList.add(item);
+                produceProcessLists.add(item);
             }
 
-            return getDataTable(ProduceProcessList);
+            return getDataTable(produceProcessLists);
         }else{
             List<Map<String,Object>> ProduceProcessList = new ArrayList<>();
             return getDataTable(ProduceProcessList);
@@ -114,7 +114,7 @@ public class ProduceProcessController extends BaseController
             ProduceProcessList produceProcessList = new ProduceProcessList();
             produceProcessList.setEnterpriseIds(enterpriseIds);
             List<ProduceProcess> list = produceProcessService.selectProduceProcessList(produceProcessList);
-            List<Map<String, Object>> ProduceProcessList = new ArrayList<>();
+            List<Map<String, Object>> produceProcessLists = new ArrayList<>();
             for (ProduceProcess produceProcess1 : list) {
                 Map<String, Object> item = new HashMap<>();
                 Integer id = produceProcess1.getId();
@@ -133,12 +133,12 @@ public class ProduceProcessController extends BaseController
                 item.put("createTime", DateFormatUtil.format(produceProcess1.getCreateTime()));
                 item.put("updateTime", DateFormatUtil.format(produceProcess1.getUpdateTime()));
 
-                ProduceProcessList.add(item);
+                produceProcessLists.add(item);
             }
 
-            data.put("items",ProduceProcessList);
+            data.put("items",produceProcessLists);
 
-            return success(ProduceProcessList);
+            return success(data);
         }else{
             return error("企业id不能为空");
         }
