@@ -191,4 +191,16 @@ public class EnterpriseController extends BaseController
     {
         return toAjax(enterpriseService.deleteEnterpriseByIds(ids));
     }
+
+
+    /**
+     * 获取企业管理详细信息
+     */
+    @ApiOperation("获取企业详情,原接口: /enterprise/detail")
+    @GetMapping(value = "/detail/{id}")
+    public AjaxResult detail(@PathVariable("id") Integer id)
+    {
+        return success(enterpriseService.selectEnterpriseById(id));
+    }
+
 }
