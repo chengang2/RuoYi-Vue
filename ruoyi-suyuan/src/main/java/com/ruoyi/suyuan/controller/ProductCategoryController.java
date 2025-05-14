@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.suyuan.domain.Enterprise;
 import com.ruoyi.suyuan.service.IEnterpriseService;
+import com.ruoyi.suyuan.tools.DateFormatUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,9 +56,13 @@ public class ProductCategoryController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(ProductCategory productCategory)
     {
+        startPage();
         List<ProductCategory> list = productCategoryService.selectProductCategoryList(productCategory);
-        //startPage();
+
+        PageInfo<ProductCategory> pageInfo = new PageInfo<>(list);
+
         List<Map<String,Object>> items = new ArrayList<>();
+
         for (ProductCategory productCategory1 : list) {
             Map<String,Object> item = new HashMap<>();
             Integer enterpriseId = productCategory1.getEnterpriseId();
@@ -68,13 +75,19 @@ public class ProductCategoryController extends BaseController
             item.put("enterpriseName",enterpriseName);
             item.put("name", productCategory1.getName());
             item.put("enterpriseId", productCategory1.getEnterpriseId());
-            item.put("createTime", productCategory1.getCreateTime());
-            item.put("updateTime", productCategory1.getUpdateTime());
+            item.put("createTime", DateFormatUtil.format(productCategory1.getCreateTime()));
+            item.put("updateTime", DateFormatUtil.format(productCategory1.getUpdateTime()));
 
             items.add(item);
         }
 
-        return getDataTable(items);
+        // 用原始list的分页信息，返回你组装的items
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(items);
+        rspData.setTotal(pageInfo.getTotal());
+        return rspData;
     }
     @PreAuthorize("@ss.hasPermi('suyuan:productcategory:list')")
     @ApiOperation("获取产品类别列表,原接口: /productCategory/getAll")
@@ -97,8 +110,8 @@ public class ProductCategoryController extends BaseController
             item.put("enterpriseName",enterpriseName);
             item.put("name", productCategory1.getName());
             item.put("enterpriseId", productCategory1.getEnterpriseId());
-            item.put("createTime", productCategory1.getCreateTime());
-            item.put("updateTime", productCategory1.getUpdateTime());
+            item.put("createTime", DateFormatUtil.format(productCategory1.getCreateTime()));
+            item.put("updateTime", DateFormatUtil.format(productCategory1.getUpdateTime()));
 
             items.add(item);
         }
@@ -140,8 +153,8 @@ public class ProductCategoryController extends BaseController
         data.put("enterpriseName",enterprise.getName());
         data.put("name", productCategory.getName());
         data.put("enterpriseId", productCategory.getEnterpriseId());
-        data.put("createTime", productCategory.getCreateTime());
-        data.put("updateTime", productCategory.getUpdateTime());
+        data.put("createTime", DateFormatUtil.format(productCategory.getCreateTime()));
+        data.put("updateTime", DateFormatUtil.format(productCategory.getUpdateTime()));
         return success(data);
     }
 

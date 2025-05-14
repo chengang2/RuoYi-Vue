@@ -3,6 +3,8 @@ package com.ruoyi.suyuan.controller;
 import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.suyuan.domain.*;
 import com.ruoyi.suyuan.service.IEnterpriseService;
 import com.ruoyi.suyuan.service.IGrowthProcessStepService;
@@ -64,9 +66,13 @@ public class GrowthProcessController extends BaseController
         if(!enterpriseIds.isEmpty()){
             GrowthProcessList growthProcessList = new GrowthProcessList();
             growthProcessList.setEnterpriseIds(enterpriseIds);
+            startPage();
             List<GrowthProcess> list = growthProcessService.selectGrowthProcessList(growthProcessList);
-            //startPage();
+
+            PageInfo<GrowthProcess> pageInfo = new PageInfo<>(list);
+
             List<Map<String,Object>> growthProcessLists = new ArrayList<>();
+
             for (GrowthProcess growthProcess1 : list) {
                 Map<String,Object> map = new HashMap<>();
                 Integer enterpriseId1 = growthProcess1.getEnterpriseId();
@@ -86,7 +92,13 @@ public class GrowthProcessController extends BaseController
                 growthProcessLists.add(map);
             }
 
-            return getDataTable(growthProcessLists);
+            // 用原始list的分页信息，返回你组装的items
+            TableDataInfo rspData = new TableDataInfo();
+            rspData.setCode(HttpStatus.SUCCESS);
+            rspData.setMsg("查询成功");
+            rspData.setRows(growthProcessLists);
+            rspData.setTotal(pageInfo.getTotal());
+            return rspData;
 
         }else{
             List<Map<String,Object>> prowthProcessList = new ArrayList<>();

@@ -3,6 +3,8 @@ package com.ruoyi.suyuan.controller;
 import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.suyuan.domain.*;
 import com.ruoyi.suyuan.service.IEnterpriseService;
 import com.ruoyi.suyuan.service.IProduceProcessStepService;
@@ -63,8 +65,11 @@ public class ProduceProcessController extends BaseController
         if(!enterpriseIds.isEmpty()){
             ProduceProcessList produceProcessList = new ProduceProcessList();
             produceProcessList.setEnterpriseIds(enterpriseIds);
+            startPage();
             List<ProduceProcess> list = produceProcessService.selectProduceProcessList(produceProcessList);
-            //startPage();
+
+            PageInfo<ProduceProcess> pageInfo = new PageInfo<>(list);
+
             List<Map<String,Object>> produceProcessLists = new ArrayList<>();
             for (ProduceProcess produceProcess1 : list) {
                 Map<String,Object> item = new HashMap<>();
@@ -86,8 +91,14 @@ public class ProduceProcessController extends BaseController
 
                 produceProcessLists.add(item);
             }
+            // 用原始list的分页信息，返回你组装的items
+            TableDataInfo rspData = new TableDataInfo();
+            rspData.setCode(HttpStatus.SUCCESS);
+            rspData.setMsg("查询成功");
+            rspData.setRows(produceProcessLists);
+            rspData.setTotal(pageInfo.getTotal());
 
-            return getDataTable(produceProcessLists);
+            return rspData;
         }else{
             List<Map<String,Object>> ProduceProcessList = new ArrayList<>();
             return getDataTable(ProduceProcessList);

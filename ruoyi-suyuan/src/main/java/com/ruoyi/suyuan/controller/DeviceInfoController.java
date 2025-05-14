@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.suyuan.domain.*;
 import com.ruoyi.suyuan.service.IDeviceMonitorService;
 import com.ruoyi.suyuan.service.IDeviceVoiceService;
@@ -65,10 +67,13 @@ public class DeviceInfoController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(DeviceInfoVO deviceInfoVO)
     {
-
+        startPage();
         List<DeviceInfo> list = deviceInfoService.selectDeviceInfoList(deviceInfoVO);
-        //startPage();
+
+        PageInfo<DeviceInfo> pageInfo = new PageInfo<>(list);
+
         List<DeviceListVO> voList = new ArrayList<>();
+
         for (DeviceInfo device : list) {
             DeviceListVO vo = new DeviceListVO();
             // 1. 获取企业信息
@@ -88,7 +93,13 @@ public class DeviceInfoController extends BaseController
             voList.add(vo);
 
         }
-        return getDataTable(voList);
+        // 用原始list的分页信息，返回你组装的items
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(voList);
+        rspData.setTotal(pageInfo.getTotal());
+        return rspData;
     }
 
     /**
