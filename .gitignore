@@ -47,3 +47,4 @@ nbdist/
 !*/build/*.xml
 
 application.yml
+application-druid.yml
