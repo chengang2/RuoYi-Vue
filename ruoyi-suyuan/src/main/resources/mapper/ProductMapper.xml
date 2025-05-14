@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.ProductMapper">
+    
+    <resultMap type="Product" id="ProductResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="enterpriseId"    column="enterprise_id"    />
+        <result property="standardName"    column="standard_name"    />
+        <result property="productCategoryId"    column="product_category_id"    />
+        <result property="standardNo"    column="standard_no"    />
+        <result property="specification"    column="specification"    />
+        <result property="orginEnterpriseId"    column="orgin_enterprise_id"    />
+        <result property="factoryEnterpriseId"    column="factory_enterprise_id"    />
+        <result property="produceProcessId"    column="produce_process_id"    />
+        <result property="growthProcessId"    column="growth_process_id"    />
+        <result property="photos"    column="photos"    />
+        <result property="certificationIds"    column="certification_ids"    />
+        <result property="video"    column="video"    />
+        <result property="description"    column="description"    />
+        <result property="standardDescription"    column="standard_description"    />
+        <result property="edibleMethod"    column="edible_method"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectProductVo">
+        select id, name, enterprise_id, standard_name, product_category_id, standard_no, specification, orgin_enterprise_id, factory_enterprise_id, produce_process_id, growth_process_id, photos, certification_ids, video, description, standard_description, edible_method, create_by, create_time, update_by, update_time from product
+    </sql>
+
+    <select id="selectProductList" parameterType="ProductList" resultMap="ProductResult">
+        <include refid="selectProductVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+            <if test="standardName != null  and standardName != ''"> and standard_name like concat('%', #{standardName}, '%')</if>
+            <if test="productCategoryId != null "> and product_category_id = #{productCategoryId}</if>
+            <if test="standardNo != null  and standardNo != ''"> and standard_no = #{standardNo}</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="orginEnterpriseId != null "> and orgin_enterprise_id = #{orginEnterpriseId}</if>
+            <if test="factoryEnterpriseId != null "> and factory_enterprise_id = #{factoryEnterpriseId}</if>
+            <if test="produceProcessId != null "> and produce_process_id = #{produceProcessId}</if>
+            <if test="growthProcessId != null "> and growth_process_id = #{growthProcessId}</if>
+            <if test="photos != null  and photos != ''"> and photos = #{photos}</if>
+            <if test="certificationIds != null  and certificationIds != ''"> and certification_ids = #{certificationIds}</if>
+            <if test="video != null  and video != ''"> and video = #{video}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="standardDescription != null  and standardDescription != ''"> and standard_description = #{standardDescription}</if>
+            <if test="edibleMethod != null  and edibleMethod != ''"> and edible_method = #{edibleMethod}</if>
+            <if test="enterpriseIds != null and enterpriseIds.size() > 0"> and enterprise_id in
+                <foreach item="enterpriseId" collection="enterpriseIds" open="(" separator="," close=")">
+                    #{enterpriseId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectProductById" parameterType="Integer" resultMap="ProductResult">
+        <include refid="selectProductVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectProduct" parameterType="Product" resultMap="ProductResult">
+        <include refid="selectProductVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name = #{name}</if>
+            <if test="enterpriseId != null "> and enterprise_id = #{enterpriseId}</if>
+        </where>
+        limit 1
+    </select>
+
+    <insert id="insertProduct" parameterType="Product" useGeneratedKeys="true" keyProperty="id">
+        insert into product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="enterpriseId != null">enterprise_id,</if>
+            <if test="standardName != null">standard_name,</if>
+            <if test="productCategoryId != null">product_category_id,</if>
+            <if test="standardNo != null">standard_no,</if>
+            <if test="specification != null">specification,</if>
+            <if test="orginEnterpriseId != null">orgin_enterprise_id,</if>
+            <if test="factoryEnterpriseId != null">factory_enterprise_id,</if>
+            <if test="produceProcessId != null">produce_process_id,</if>
+            <if test="growthProcessId != null">growth_process_id,</if>
+            <if test="photos != null">photos,</if>
+            <if test="certificationIds != null">certification_ids,</if>
+            <if test="video != null">video,</if>
+            <if test="description != null">description,</if>
+            <if test="standardDescription != null">standard_description,</if>
+            <if test="edibleMethod != null">edible_method,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="enterpriseId != null">#{enterpriseId},</if>
+            <if test="standardName != null">#{standardName},</if>
+            <if test="productCategoryId != null">#{productCategoryId},</if>
+            <if test="standardNo != null">#{standardNo},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="orginEnterpriseId != null">#{orginEnterpriseId},</if>
+            <if test="factoryEnterpriseId != null">#{factoryEnterpriseId},</if>
+            <if test="produceProcessId != null">#{produceProcessId},</if>
+            <if test="growthProcessId != null">#{growthProcessId},</if>
+            <if test="photos != null">#{photos},</if>
+            <if test="certificationIds != null">#{certificationIds},</if>
+            <if test="video != null">#{video},</if>
+            <if test="description != null">#{description},</if>
+            <if test="standardDescription != null">#{standardDescription},</if>
+            <if test="edibleMethod != null">#{edibleMethod},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProduct" parameterType="Product">
+        update product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="enterpriseId != null">enterprise_id = #{enterpriseId},</if>
+            <if test="standardName != null">standard_name = #{standardName},</if>
+            <if test="productCategoryId != null">product_category_id = #{productCategoryId},</if>
+            <if test="standardNo != null">standard_no = #{standardNo},</if>
+            <if test="specification != null">specification = #{specification},</if>
+            <if test="orginEnterpriseId != null">orgin_enterprise_id = #{orginEnterpriseId},</if>
+            <if test="factoryEnterpriseId != null">factory_enterprise_id = #{factoryEnterpriseId},</if>
+            <if test="produceProcessId != null">produce_process_id = #{produceProcessId},</if>
+            <if test="growthProcessId != null">growth_process_id = #{growthProcessId},</if>
+            <if test="photos != null">photos = #{photos},</if>
+            <if test="certificationIds != null">certification_ids = #{certificationIds},</if>
+            <if test="video != null">video = #{video},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="standardDescription != null">standard_description = #{standardDescription},</if>
+            <if test="edibleMethod != null">edible_method = #{edibleMethod},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProductById" parameterType="Integer">
+        delete from product where id = #{id}
+    </delete>
+
+    <delete id="deleteProductByIds" parameterType="Integer">
+        delete from product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
