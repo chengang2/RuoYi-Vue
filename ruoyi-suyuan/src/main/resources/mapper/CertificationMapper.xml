@@ -43,6 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logo != null  and logo != ''"> and logo = #{logo}</if>
             <if test="license != null  and license != ''"> and license = #{license}</if>
         </where>
+        limit 1
     </select>
 
     <insert id="insertCertification" parameterType="Certification" useGeneratedKeys="true" keyProperty="id">

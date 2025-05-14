@@ -26,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="datas != null  and datas != ''"> and datas = #{datas}</if>
             <if test="date != null  and date != ''"> and date = #{date}</if>
         </where>
+        order by create_time desc
     </select>
     
     <select id="selectDeviceMonitorById" parameterType="Long" resultMap="DeviceMonitorResult">
@@ -35,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectDeviceMonitorByDeviceId" parameterType="String" resultMap="DeviceMonitorResult">
         <include refid="selectDeviceMonitorVo"/>
-        where device_id = #{deviceId}  order by id desc limit 1
+        where device_id = #{deviceId}  order by create_time desc limit 1
     </select>
 
 

@@ -60,11 +60,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectEnterpriseByName" parameterType="String" resultMap="EnterpriseResult">
         <include refid="selectEnterpriseVo"/>
-        where name = #{name}
+        where name = #{name} limit 1
     </select>
-
-
-
 
     <insert id="insertEnterprise" parameterType="Enterprise" useGeneratedKeys="true" keyProperty="id">
         insert into enterprise
