@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.ProductBatchMapper">
+    
+    <resultMap type="ProductBatch" id="ProductBatchResult">
+        <result property="id"    column="id"    />
+        <result property="produceDatetime"    column="produce_datetime"    />
+        <result property="batchNumber"    column="batch_number"    />
+        <result property="productId"    column="product_id"    />
+        <result property="testReport"    column="test_report"    />
+        <result property="testReportPicture"    column="test_report_picture"    />
+        <result property="qrCode"    column="qr_code"    />
+        <result property="printNum"    column="print_num"    />
+        <result property="md5Code"    column="md5_code"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectProductBatchVo">
+        select id, produce_datetime, batch_number, product_id, test_report, test_report_picture, qr_code, print_num, md5_code, status, create_by, create_time, update_by, update_time from productbatch
+    </sql>
+
+    <select id="selectProductBatchList" parameterType="ProductBatchList" resultMap="ProductBatchResult">
+        <include refid="selectProductBatchVo"/>
+        <where>  
+            <if test="produceDatetime != null "> and produce_datetime = #{produceDatetime}</if>
+            <if test="batchNumber != null  and batchNumber != ''"> and batch_number = #{batchNumber}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="testReport != null  and testReport != ''"> and test_report = #{testReport}</if>
+            <if test="testReportPicture != null  and testReportPicture != ''"> and test_report_picture = #{testReportPicture}</if>
+            <if test="qrCode != null  and qrCode != ''"> and qr_code = #{qrCode}</if>
+            <if test="printNum != null "> and print_num = #{printNum}</if>
+            <if test="md5Code != null  and md5Code != ''"> and md5_code = #{md5Code}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="productIds != null and productIds.size() > 0"> and product_id in
+                <foreach item="productId" collection="productIds" open="(" separator="," close=")">
+                    #{productId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectProductBatchById" parameterType="Integer" resultMap="ProductBatchResult">
+        <include refid="selectProductBatchVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectProductBatch" parameterType="ProductBatch" resultMap="ProductBatchResult">
+        <include refid="selectProductBatchVo"/>
+        <where>
+            <if test="id != null "> and id = #{id}</if>
+            <if test="produceDatetime != null "> and produce_datetime = #{produceDatetime}</if>
+            <if test="batchNumber != null  and batchNumber != ''"> and batch_number = #{batchNumber}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="testReport != null  and testReport != ''"> and test_report = #{testReport}</if>
+            <if test="testReportPicture != null  and testReportPicture != ''"> and test_report_picture = #{testReportPicture}</if>
+            <if test="qrCode != null  and qrCode != ''"> and qr_code = #{qrCode}</if>
+            <if test="printNum != null "> and print_num = #{printNum}</if>
+            <if test="md5Code != null  and md5Code != ''"> and md5_code = #{md5Code}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+        limit 1
+    </select>
+
+    <insert id="insertProductBatch" parameterType="ProductBatch" useGeneratedKeys="true" keyProperty="id">
+        insert into productbatch
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="produceDatetime != null">produce_datetime,</if>
+            <if test="batchNumber != null">batch_number,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="testReport != null">test_report,</if>
+            <if test="testReportPicture != null">test_report_picture,</if>
+            <if test="qrCode != null">qr_code,</if>
+            <if test="printNum != null">print_num,</if>
+            <if test="md5Code != null">md5_code,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="produceDatetime != null">#{produceDatetime},</if>
+            <if test="batchNumber != null">#{batchNumber},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="testReport != null">#{testReport},</if>
+            <if test="testReportPicture != null">#{testReportPicture},</if>
+            <if test="qrCode != null">#{qrCode},</if>
+            <if test="printNum != null">#{printNum},</if>
+            <if test="md5Code != null">#{md5Code},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProductBatch" parameterType="ProductBatch">
+        update productbatch
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="produceDatetime != null">produce_datetime = #{produceDatetime},</if>
+            <if test="batchNumber != null">batch_number = #{batchNumber},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="testReport != null">test_report = #{testReport},</if>
+            <if test="testReportPicture != null">test_report_picture = #{testReportPicture},</if>
+            <if test="qrCode != null">qr_code = #{qrCode},</if>
+            <if test="printNum != null">print_num = #{printNum},</if>
+            <if test="md5Code != null">md5_code = #{md5Code},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProductBatchById" parameterType="Integer">
+        delete from productbatch where id = #{id}
+    </delete>
+
+    <delete id="deleteProductBatchByIds" parameterType="Integer">
+        delete from productbatch where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
