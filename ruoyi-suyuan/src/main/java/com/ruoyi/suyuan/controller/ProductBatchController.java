@@ -1,6 +1,7 @@
 package com.ruoyi.suyuan.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
@@ -8,8 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.suyuan.domain.*;
-import com.ruoyi.suyuan.service.IEnterpriseService;
-import com.ruoyi.suyuan.service.IProductService;
+import com.ruoyi.suyuan.service.*;
 import com.ruoyi.suyuan.tools.DateFormatUtil;
 import com.ruoyi.suyuan.tools.Md5Util;
 import com.ruoyi.suyuan.tools.PdfUtil;
@@ -30,7 +30,6 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.suyuan.service.IProductBatchService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
@@ -51,6 +50,16 @@ public class ProductBatchController extends BaseController
     private IProductService productService;
     @Autowired
     private IEnterpriseService enterpriseService;
+    @Autowired
+    private IGrowthProcessService growthProcessService;
+    @Autowired
+    private IGrowthProcessStepService growthProcessStepService;
+    @Autowired
+    private IProduceProcessService produceProcessService;
+    @Autowired
+    private IProduceProcessStepService produceProcessStepService;
+    @Autowired
+    private ICertificationService certificationService;
     @Autowired
     private QRCodeUtil qrCodeUtil;
     /**
@@ -395,4 +404,298 @@ public class ProductBatchController extends BaseController
     {
         return toAjax(productBatchService.deleteProductBatchByIds(ids));
     }
+
+    @ApiOperation("获取企业详情,原接口: /productBatch/detail")
+    @GetMapping(value = "/detail/{id}")
+    public AjaxResult detail(@PathVariable("id") Integer id)
+    {
+        Map<String,Object> data = new java.util.HashMap<>();
+        ProductBatch productBatch = productBatchService.selectProductBatchById(id);
+        if (productBatch == null) {
+            return error("产品批次不存在");
+        }
+
+        Integer status = productBatch.getStatus();
+        if(status != null && status == 1){
+            return error("二维码已失效，请联系管理员");
+        }
+
+        Integer productId = productBatch.getProductId();
+        if (productId == null) {
+            return error("产品id不能为空");
+        }
+        Map<String,Object> dataProduct = new HashMap<>();
+
+        Product product = productService.selectProductById(productId);
+        if (product == null) {
+            return error("产品不存在");
+        }
+        Map<String,Object> dataOriginEnterprise = new HashMap<>();
+        Integer orginEnterpriseId = product.getOrginEnterpriseId();
+        String originEnterpriseName = "";
+        if (orginEnterpriseId != null) {
+            Enterprise originEnterprise = enterpriseService.selectEnterpriseById(orginEnterpriseId);
+            if (originEnterprise != null) {
+                originEnterpriseName = originEnterprise.getName();
+            }
+        }
+        dataOriginEnterprise.put("id", orginEnterpriseId);
+        dataOriginEnterprise.put("name", originEnterpriseName);
+
+        Map<String,Object> dataFactoryEnterprise = new HashMap<>();
+        Integer factoryEnterpriseId = product.getFactoryEnterpriseId();
+        String factoryEnterpriseName = "";
+        if(factoryEnterpriseId != null){
+            Enterprise factoryEnterprise = enterpriseService.selectEnterpriseById(factoryEnterpriseId);
+            if (factoryEnterprise != null) {
+                factoryEnterpriseName = factoryEnterprise.getName();
+            }
+        }
+        dataFactoryEnterprise.put("id", factoryEnterpriseId);
+        dataFactoryEnterprise.put("name", factoryEnterpriseName);
+
+        Map<String,Object> dataGrowthProcess = new HashMap<>();
+        Integer growthProcessId = product.getGrowthProcessId();
+        String growthProcessName = "";
+        if(growthProcessId != null){
+            GrowthProcess growthProcess = growthProcessService.selectGrowthProcessById(growthProcessId);
+            if (growthProcess != null) {
+                growthProcessName = growthProcess.getName();
+            }
+        }
+        dataGrowthProcess.put("name", growthProcessName);
+        GrowthProcessStep growthProcessStep = new GrowthProcessStep();
+        growthProcessStep.setGrowthProcessId(growthProcessId);
+        List<GrowthProcessStep> growthProcessSteps = growthProcessStepService.selectGrowthProcessStepList(growthProcessStep);
+        List<Map<String,Object>> dataGrowthProcessSteps = new ArrayList<>();
+        for (GrowthProcessStep growthProcessStep1 : growthProcessSteps) {
+            Map<String,Object> item = new HashMap<>();
+            item.put("name", growthProcessStep1.getName());
+            item.put("picture", growthProcessStep1.getPicture());
+
+            dataGrowthProcessSteps.add(item);
+        }
+        dataGrowthProcess.put("steps", dataGrowthProcessSteps);
+
+        Map<String,Object> dataProduceProcess = new HashMap<>();
+        Integer produceProcessId = product.getProduceProcessId();
+        String produceProcessName = "";
+        ProduceProcess produceProcess = produceProcessService.selectProduceProcessById(produceProcessId);
+        if (produceProcess != null) {
+            produceProcessName = produceProcess.getName();
+        }
+        dataProduceProcess.put("name", produceProcessName);
+
+        ProduceProcessStep produceProcessStep = new ProduceProcessStep();
+        produceProcessStep.setProduceProcessId(produceProcessId);
+        List<ProduceProcessStep> produceProcessSteps = produceProcessStepService.selectProduceProcessStepList(produceProcessStep);
+        List<Map<String,Object>> dataProduceProcessSteps = new ArrayList<>();
+        for (ProduceProcessStep produceProcessStep1 : produceProcessSteps) {
+            Map<String,Object> item = new HashMap<>();
+            item.put("name", produceProcessStep1.getName());
+            item.put("picture", produceProcessStep1.getPicture());
+
+            dataProduceProcessSteps.add(item);
+        }
+        dataProduceProcess.put("steps", dataProduceProcessSteps);
+
+        List<Map<String,Object>> dataCertifications = new ArrayList<>();
+        String certificationIds = product.getCertificationIds();
+        String[] certificationIdArr = certificationIds.split(",");
+        for (String certificationId : certificationIdArr) {
+            if(!certificationId.isEmpty()){
+                Map<String,Object> item = new HashMap<>();
+                Integer cid = Integer.valueOf(certificationId);
+                Certification certification = certificationService.selectCertificationById(cid);
+                if (certification != null) {
+                    item.put("id", certification.getId());
+                    item.put("name", certification.getName());
+                    item.put("logo", certification.getLogo());
+                    item.put("license", certification.getLicense());
+
+                    dataCertifications.add(item);
+                }
+            }
+        }
+        dataProduct.put("id",product.getId());
+        dataProduct.put("name",product.getName());
+        dataProduct.put("standardDescription",product.getStandardDescription());
+        dataProduct.put("standardName",product.getStandardName());
+        dataProduct.put("description",product.getDescription());
+        dataProduct.put("video",product.getVideo());
+        dataProduct.put("standardNo",product.getStandardNo());
+        dataProduct.put("edibleMethod",product.getEdibleMethod());
+        dataProduct.put("specification",product.getSpecification());
+        dataProduct.put("productCategoryId",product.getProductCategoryId());
+        dataProduct.put("photos",product.getPhotos());
+        dataProduct.put("originEnterpriseId",orginEnterpriseId);
+        dataProduct.put("originEnterprise",dataOriginEnterprise);
+        dataProduct.put("factoryEnterpriseId",factoryEnterpriseId);
+        dataProduct.put("factoryEnterprise",dataFactoryEnterprise);
+        dataProduct.put("growthProcessId",growthProcessId);
+        dataProduct.put("growthProcess",dataGrowthProcess);
+        dataProduct.put("produceProcessId",produceProcessId);
+        dataProduct.put("produceProcess",dataProduceProcess);
+
+        dataProduct.put("enterpriseId",product.getEnterpriseId());
+        dataProduct.put("certificationIds",certificationIds);
+        dataProduct.put("certifications",dataCertifications);
+
+        data.put("id", productBatch.getId());
+        data.put("produceDatetime",DateFormatUtil.format(productBatch.getProduceDatetime()));
+        data.put("productName", product.getName());
+        data.put("testReport", productBatch.getTestReport());
+        data.put("testReportPicture", productBatch.getTestReportPicture());
+        data.put("product",dataProduct);
+
+        return success(data);
+    }
+
+    @ApiOperation("获取企业详情,原接口: /productBatch/detail2")
+    @GetMapping(value = "/detail2/{id}")
+    public AjaxResult detail2(@PathVariable("id") String id){
+        Map<String,Object> data = new java.util.HashMap<>();
+        ProductBatch pb = new ProductBatch();
+        pb.setMd5Code(id);
+        ProductBatch productBatch = productBatchService.selectProductBatch(pb);
+        if (productBatch == null) {
+            return error("产品批次不存在");
+        }
+
+        Integer status = productBatch.getStatus();
+        if(status != null && status == 1){
+            return error("二维码已失效，请联系管理员");
+        }
+
+        Integer productId = productBatch.getProductId();
+        if (productId == null) {
+            return error("产品id不能为空");
+        }
+        Map<String,Object> dataProduct = new HashMap<>();
+
+        Product product = productService.selectProductById(productId);
+        if (product == null) {
+            return error("产品不存在");
+        }
+        Map<String,Object> dataOriginEnterprise = new HashMap<>();
+        Integer orginEnterpriseId = product.getOrginEnterpriseId();
+        String originEnterpriseName = "";
+        if (orginEnterpriseId != null) {
+            Enterprise originEnterprise = enterpriseService.selectEnterpriseById(orginEnterpriseId);
+            if (originEnterprise != null) {
+                originEnterpriseName = originEnterprise.getName();
+            }
+        }
+        dataOriginEnterprise.put("id", orginEnterpriseId);
+        dataOriginEnterprise.put("name", originEnterpriseName);
+
+        Map<String,Object> dataFactoryEnterprise = new HashMap<>();
+        Integer factoryEnterpriseId = product.getFactoryEnterpriseId();
+        String factoryEnterpriseName = "";
+        if(factoryEnterpriseId != null){
+            Enterprise factoryEnterprise = enterpriseService.selectEnterpriseById(factoryEnterpriseId);
+            if (factoryEnterprise != null) {
+                factoryEnterpriseName = factoryEnterprise.getName();
+            }
+        }
+        dataFactoryEnterprise.put("id", factoryEnterpriseId);
+        dataFactoryEnterprise.put("name", factoryEnterpriseName);
+
+        Map<String,Object> dataGrowthProcess = new HashMap<>();
+        Integer growthProcessId = product.getGrowthProcessId();
+        String growthProcessName = "";
+        if(growthProcessId != null){
+            GrowthProcess growthProcess = growthProcessService.selectGrowthProcessById(growthProcessId);
+            if (growthProcess != null) {
+                growthProcessName = growthProcess.getName();
+            }
+        }
+        dataGrowthProcess.put("name", growthProcessName);
+        GrowthProcessStep growthProcessStep = new GrowthProcessStep();
+        growthProcessStep.setGrowthProcessId(growthProcessId);
+        List<GrowthProcessStep> growthProcessSteps = growthProcessStepService.selectGrowthProcessStepList(growthProcessStep);
+        List<Map<String,Object>> dataGrowthProcessSteps = new ArrayList<>();
+        for (GrowthProcessStep growthProcessStep1 : growthProcessSteps) {
+            Map<String,Object> item = new HashMap<>();
+            item.put("name", growthProcessStep1.getName());
+            item.put("picture", growthProcessStep1.getPicture());
+
+            dataGrowthProcessSteps.add(item);
+        }
+        dataGrowthProcess.put("steps", dataGrowthProcessSteps);
+
+        Map<String,Object> dataProduceProcess = new HashMap<>();
+        Integer produceProcessId = product.getProduceProcessId();
+        String produceProcessName = "";
+        ProduceProcess produceProcess = produceProcessService.selectProduceProcessById(produceProcessId);
+        if (produceProcess != null) {
+            produceProcessName = produceProcess.getName();
+        }
+        dataProduceProcess.put("name", produceProcessName);
+
+        ProduceProcessStep produceProcessStep = new ProduceProcessStep();
+        produceProcessStep.setProduceProcessId(produceProcessId);
+        List<ProduceProcessStep> produceProcessSteps = produceProcessStepService.selectProduceProcessStepList(produceProcessStep);
+        List<Map<String,Object>> dataProduceProcessSteps = new ArrayList<>();
+        for (ProduceProcessStep produceProcessStep1 : produceProcessSteps) {
+            Map<String,Object> item = new HashMap<>();
+            item.put("name", produceProcessStep1.getName());
+            item.put("picture", produceProcessStep1.getPicture());
+
+            dataProduceProcessSteps.add(item);
+        }
+        dataProduceProcess.put("steps", dataProduceProcessSteps);
+
+        List<Map<String,Object>> dataCertifications = new ArrayList<>();
+        String certificationIds = product.getCertificationIds();
+        String[] certificationIdArr = certificationIds.split(",");
+        for (String certificationId : certificationIdArr) {
+            if(!certificationId.isEmpty()){
+                Map<String,Object> item = new HashMap<>();
+                Integer cid = Integer.valueOf(certificationId);
+                Certification certification = certificationService.selectCertificationById(cid);
+                if (certification != null) {
+                    item.put("id", certification.getId());
+                    item.put("name", certification.getName());
+                    item.put("logo", certification.getLogo());
+                    item.put("license", certification.getLicense());
+
+                    dataCertifications.add(item);
+                }
+            }
+        }
+        dataProduct.put("id",product.getId());
+        dataProduct.put("name",product.getName());
+        dataProduct.put("standardDescription",product.getStandardDescription());
+        dataProduct.put("standardName",product.getStandardName());
+        dataProduct.put("description",product.getDescription());
+        dataProduct.put("video",product.getVideo());
+        dataProduct.put("standardNo",product.getStandardNo());
+        dataProduct.put("edibleMethod",product.getEdibleMethod());
+        dataProduct.put("specification",product.getSpecification());
+        dataProduct.put("productCategoryId",product.getProductCategoryId());
+        dataProduct.put("photos",product.getPhotos());
+        dataProduct.put("originEnterpriseId",orginEnterpriseId);
+        dataProduct.put("originEnterprise",dataOriginEnterprise);
+        dataProduct.put("factoryEnterpriseId",factoryEnterpriseId);
+        dataProduct.put("factoryEnterprise",dataFactoryEnterprise);
+        dataProduct.put("growthProcessId",growthProcessId);
+        dataProduct.put("growthProcess",dataGrowthProcess);
+        dataProduct.put("produceProcessId",produceProcessId);
+        dataProduct.put("produceProcess",dataProduceProcess);
+
+        dataProduct.put("enterpriseId",product.getEnterpriseId());
+        dataProduct.put("certificationIds",certificationIds);
+        dataProduct.put("certifications",dataCertifications);
+
+        data.put("id", productBatch.getId());
+        data.put("produceDatetime",DateFormatUtil.format(productBatch.getProduceDatetime()));
+        data.put("productName", product.getName());
+        data.put("testReport", productBatch.getTestReport());
+        data.put("testReportPicture", productBatch.getTestReportPicture());
+        data.put("product",dataProduct);
+
+        return success(data);
+    }
+
 }
