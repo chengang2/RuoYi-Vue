@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.QrcodeScanLogMapper">
+    
+    <resultMap type="QrcodeScanLog" id="QrcodeScanLogResult">
+        <result property="id"    column="id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="cip"    column="cip"    />
+        <result property="cid"    column="cid"    />
+        <result property="cname"    column="cname"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectQrcodeScanLogVo">
+        select id, product_id, cip, cid, cname, create_by, create_time, update_by, update_time from qrcodescanlog
+    </sql>
+
+    <select id="selectQrcodeScanLogList" parameterType="QrcodeScanLog" resultMap="QrcodeScanLogResult">
+        <include refid="selectQrcodeScanLogVo"/>
+        <where>  
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="cip != null  and cip != ''"> and cip = #{cip}</if>
+            <if test="cid != null  and cid != ''"> and cid = #{cid}</if>
+            <if test="cname != null  and cname != ''"> and cname like concat('%', #{cname}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectQrcodeScanLogById" parameterType="Integer" resultMap="QrcodeScanLogResult">
+        <include refid="selectQrcodeScanLogVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertQrcodeScanLog" parameterType="QrcodeScanLog" useGeneratedKeys="true" keyProperty="id">
+        insert into qrcodescanlog
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">product_id,</if>
+            <if test="cip != null">cip,</if>
+            <if test="cid != null">cid,</if>
+            <if test="cname != null">cname,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productId != null">#{productId},</if>
+            <if test="cip != null">#{cip},</if>
+            <if test="cid != null">#{cid},</if>
+            <if test="cname != null">#{cname},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateQrcodeScanLog" parameterType="QrcodeScanLog">
+        update qrcodescanlog
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="cip != null">cip = #{cip},</if>
+            <if test="cid != null">cid = #{cid},</if>
+            <if test="cname != null">cname = #{cname},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteQrcodeScanLogById" parameterType="Integer">
+        delete from qrcodescanlog where id = #{id}
+    </delete>
+
+    <delete id="deleteQrcodeScanLogByIds" parameterType="Integer">
+        delete from qrcodescanlog where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectScanCountByCity" resultType="com.ruoyi.suyuan.domain.ScanLogCName">
+        SELECT cname, COUNT(*) AS count
+        FROM qrcodescanlog
+        GROUP BY cname
+        ORDER BY count DESC
+            LIMIT 100
+    </select>
+
+    <select id="selectScanTotalCount" resultType="int">
+        SELECT COUNT(*) FROM qrcodescanlog
+    </select>
+
+    <select id="selectScanCountByProductCategory" resultType="com.ruoyi.suyuan.domain.ScanLogPName">
+        SELECT pc.name AS name, COUNT(*) AS count
+        FROM qrcodescanlog q
+            LEFT JOIN product p ON q.product_id = p.id
+            LEFT JOIN productcategory pc ON p.product_category_id = pc.id
+        GROUP BY pc.name
+        ORDER BY count DESC
+    </select>
+</mapper>

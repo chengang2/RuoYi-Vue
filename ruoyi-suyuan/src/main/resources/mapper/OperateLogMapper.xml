@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.OperateLogMapper">
+    
+    <resultMap type="OperateLog" id="OperateLogResult">
+        <result property="id"    column="id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="cip"    column="cip"    />
+        <result property="cid"    column="cid"    />
+        <result property="cname"    column="cname"    />
+        <result property="submitScore"    column="submit_score"    />
+        <result property="submitComment"    column="submit_comment"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOperateLogVo">
+        select id, product_id, cip, cid, cname, submit_score, submit_comment, create_by, create_time, update_by, update_time from operatelog
+    </sql>
+
+    <select id="selectOperateLogList" parameterType="OperateLogList" resultMap="OperateLogResult">
+        <include refid="selectOperateLogVo"/>
+        <where>  
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="cip != null  and cip != ''"> and cip = #{cip}</if>
+            <if test="cid != null  and cid != ''"> and cid = #{cid}</if>
+            <if test="cname != null  and cname != ''"> and cname like concat('%', #{cname}, '%')</if>
+            <if test="submitScore != null "> and submit_score = #{submitScore}</if>
+            <if test="submitComment != null  and submitComment != ''"> and submit_comment = #{submitComment}</if>
+            <if test="productIds != null and productIds.size() > 0"> and product_id in
+                <foreach item="productId" collection="productIds" open="(" separator="," close=")">
+                    #{productId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectOperateLogById" parameterType="Integer" resultMap="OperateLogResult">
+        <include refid="selectOperateLogVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperateLog" parameterType="OperateLog" useGeneratedKeys="true" keyProperty="id">
+        insert into operatelog
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">product_id,</if>
+            <if test="cip != null">cip,</if>
+            <if test="cid != null">cid,</if>
+            <if test="cname != null">cname,</if>
+            <if test="submitScore != null">submit_score,</if>
+            <if test="submitComment != null">submit_comment,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productId != null">#{productId},</if>
+            <if test="cip != null">#{cip},</if>
+            <if test="cid != null">#{cid},</if>
+            <if test="cname != null">#{cname},</if>
+            <if test="submitScore != null">#{submitScore},</if>
+            <if test="submitComment != null">#{submitComment},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperateLog" parameterType="OperateLog">
+        update operatelog
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="cip != null">cip = #{cip},</if>
+            <if test="cid != null">cid = #{cid},</if>
+            <if test="cname != null">cname = #{cname},</if>
+            <if test="submitScore != null">submit_score = #{submitScore},</if>
+            <if test="submitComment != null">submit_comment = #{submitComment},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperateLogById" parameterType="Integer">
+        delete from operatelog where id = #{id}
+    </delete>
+
+    <delete id="deleteOperateLogByIds" parameterType="Integer">
+        delete from operatelog where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectScoreByMonth" resultType="com.ruoyi.suyuan.domain.OperateLogScoreMonth">
+        SELECT
+            ROUND(COALESCE(a.count, 0) / b.count * 100) AS rate,
+            b.month AS month
+        FROM
+            (SELECT COUNT(*) AS count, MONTH(create_time) AS month FROM operatelog GROUP BY month) AS b
+            LEFT JOIN
+            (SELECT COUNT(*) AS count, MONTH(create_time) AS month FROM operatelog WHERE submit_score >= 4 GROUP BY month) AS a
+        ON a.month = b.month
+    </select>
+
+    <select id="selectScoreByProduct" resultType="com.ruoyi.suyuan.domain.OperateLogScoreProduct">
+        SELECT
+            c.rate,
+            COALESCE(d.name, '') AS name
+        FROM (
+                 SELECT
+                     ROUND(COALESCE(a.count, 0) / b.count * 100) AS rate,
+                     b.product_id AS id
+                 FROM
+                         (SELECT product_id, COUNT(*) AS count FROM operatelog GROUP BY product_id) AS b
+                             LEFT JOIN
+                     (SELECT product_id, COUNT(*) AS count FROM operatelog WHERE submit_score >= 4 GROUP BY product_id) AS a
+                     ON b.product_id = a.product_id
+             ) AS c
+                 LEFT JOIN product AS d ON c.id = d.id
+    </select>
+
+    <select id="selectScoreByProductAndMonth" resultType="com.ruoyi.suyuan.domain.OperateLogScoreProductMonth">
+        SELECT
+            c.rate,
+            COALESCE(d.name, '') AS name,
+            c.month AS month
+        FROM (
+            SELECT
+            ROUND(COALESCE(a.count, 0) / b.count * 100) AS rate,
+            b.product_id AS id,
+            b.month AS month
+            FROM
+            (SELECT product_id, MONTH(create_time) AS month, COUNT(*) AS count FROM operatelog GROUP BY product_id, month) AS b
+            LEFT JOIN
+            (SELECT product_id, MONTH(create_time) AS month, COUNT(*) AS count FROM operatelog WHERE submit_score >= 4 GROUP BY product_id, month) AS a
+            ON (b.product_id = a.product_id AND b.month = a.month)
+            ) AS c
+            LEFT JOIN product AS d ON c.id = d.id
+    </select>
+
+</mapper>
