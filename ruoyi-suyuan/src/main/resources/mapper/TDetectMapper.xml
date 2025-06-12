@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.TDetectMapper">
+    
+    <resultMap type="TDetect" id="TDetectResult">
+        <result property="id"    column="id"    />
+        <result property="sampleId"    column="sample_id"    />
+        <result property="detectNo"    column="detect_no"    />
+        <result property="inspectResult"    column="inspect_result"    />
+        <result property="sampleDeviceId"    column="sample_device_id"    />
+        <result property="detectItem"    column="detect_item"    />
+        <result property="detectType"    column="detect_type"    />
+        <result property="detectMethod"    column="detect_method"    />
+        <result property="inspector"    column="inspector"    />
+        <result property="detectCriteria"    column="detect_criteria"    />
+        <result property="detectTime"    column="detect_time"    />
+        <result property="detectLocation"    column="detect_location"    />
+        <result property="marketCode"    column="market_code"    />
+        <result property="detectSensivity"    column="detect_sensivity"    />
+        <result property="reagent"    column="reagent"    />
+        <result property="detectResult"    column="detect_result"    />
+        <result property="handleDuration"    column="handle_duration"    />
+        <result property="publishStatus"    column="publish_status"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="realDetectResult"    column="real_detect_result"    />
+        <result property="sendStatus"    column="send_status"    />
+        <result property="testValue"    column="test_value"    />
+        <result property="testDeviceId"    column="test_device_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="handingStatus"    column="handing_status"    />
+        <result property="reDetectDisposal"    column="re_detect_disposal"    />
+        <result property="detectUnit"    column="detect_unit"    />
+        <result property="state"    column="state"    />
+    </resultMap>
+
+    <sql id="selectTDetectVo">
+        select id, sample_id, detect_no, inspect_result, sample_device_id, detect_item, detect_type, detect_method, inspector, detect_criteria, detect_time, detect_location, market_code, detect_sensivity, reagent, detect_result, handle_duration, publish_status, update_time, real_detect_result, send_status, test_value, test_device_id, create_time, handing_status, re_detect_disposal, detect_unit, state from t_detect
+    </sql>
+
+    <select id="selectTDetectList" parameterType="TDetect" resultMap="TDetectResult">
+        <include refid="selectTDetectVo"/>
+        <where>  
+            <if test="sampleId != null "> and sample_id = #{sampleId}</if>
+            <if test="detectNo != null  and detectNo != ''"> and detect_no = #{detectNo}</if>
+            <if test="inspectResult != null  and inspectResult != ''"> and inspect_result = #{inspectResult}</if>
+            <if test="sampleDeviceId != null  and sampleDeviceId != ''"> and sample_device_id = #{sampleDeviceId}</if>
+            <if test="detectItem != null  and detectItem != ''"> and detect_item = #{detectItem}</if>
+            <if test="detectType != null  and detectType != ''"> and detect_type = #{detectType}</if>
+            <if test="detectMethod != null  and detectMethod != ''"> and detect_method = #{detectMethod}</if>
+            <if test="inspector != null  and inspector != ''"> and inspector = #{inspector}</if>
+            <if test="detectCriteria != null  and detectCriteria != ''"> and detect_criteria = #{detectCriteria}</if>
+            <if test="detectTime != null "> and detect_time = #{detectTime}</if>
+            <if test="detectLocation != null  and detectLocation != ''"> and detect_location = #{detectLocation}</if>
+            <if test="marketCode != null  and marketCode != ''"> and market_code = #{marketCode}</if>
+            <if test="detectSensivity != null  and detectSensivity != ''"> and detect_sensivity = #{detectSensivity}</if>
+            <if test="reagent != null  and reagent != ''"> and reagent = #{reagent}</if>
+            <if test="detectResult != null  and detectResult != ''"> and detect_result = #{detectResult}</if>
+            <if test="handleDuration != null  and handleDuration != ''"> and handle_duration = #{handleDuration}</if>
+            <if test="publishStatus != null "> and publish_status = #{publishStatus}</if>
+            <if test="realDetectResult != null  and realDetectResult != ''"> and real_detect_result = #{realDetectResult}</if>
+            <if test="sendStatus != null "> and send_status = #{sendStatus}</if>
+            <if test="testValue != null  and testValue != ''"> and test_value = #{testValue}</if>
+            <if test="testDeviceId != null  and testDeviceId != ''"> and test_device_id = #{testDeviceId}</if>
+            <if test="handingStatus != null  and handingStatus != ''"> and handing_status = #{handingStatus}</if>
+            <if test="reDetectDisposal != null  and reDetectDisposal != ''"> and re_detect_disposal = #{reDetectDisposal}</if>
+            <if test="detectUnit != null  and detectUnit != ''"> and detect_unit = #{detectUnit}</if>
+            <if test="state != null "> and state = #{state}</if>
+        </where>
+    </select>
+    
+    <select id="selectTDetectById" parameterType="Long" resultMap="TDetectResult">
+        <include refid="selectTDetectVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTDetect" parameterType="TDetect" useGeneratedKeys="true" keyProperty="id">
+        insert into t_detect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sampleId != null">sample_id,</if>
+            <if test="detectNo != null">detect_no,</if>
+            <if test="inspectResult != null">inspect_result,</if>
+            <if test="sampleDeviceId != null">sample_device_id,</if>
+            <if test="detectItem != null">detect_item,</if>
+            <if test="detectType != null">detect_type,</if>
+            <if test="detectMethod != null">detect_method,</if>
+            <if test="inspector != null">inspector,</if>
+            <if test="detectCriteria != null">detect_criteria,</if>
+            <if test="detectTime != null">detect_time,</if>
+            <if test="detectLocation != null">detect_location,</if>
+            <if test="marketCode != null">market_code,</if>
+            <if test="detectSensivity != null">detect_sensivity,</if>
+            <if test="reagent != null">reagent,</if>
+            <if test="detectResult != null">detect_result,</if>
+            <if test="handleDuration != null">handle_duration,</if>
+            <if test="publishStatus != null">publish_status,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="realDetectResult != null">real_detect_result,</if>
+            <if test="sendStatus != null">send_status,</if>
+            <if test="testValue != null">test_value,</if>
+            <if test="testDeviceId != null">test_device_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="handingStatus != null">handing_status,</if>
+            <if test="reDetectDisposal != null">re_detect_disposal,</if>
+            <if test="detectUnit != null">detect_unit,</if>
+            <if test="state != null">state,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sampleId != null">#{sampleId},</if>
+            <if test="detectNo != null">#{detectNo},</if>
+            <if test="inspectResult != null">#{inspectResult},</if>
+            <if test="sampleDeviceId != null">#{sampleDeviceId},</if>
+            <if test="detectItem != null">#{detectItem},</if>
+            <if test="detectType != null">#{detectType},</if>
+            <if test="detectMethod != null">#{detectMethod},</if>
+            <if test="inspector != null">#{inspector},</if>
+            <if test="detectCriteria != null">#{detectCriteria},</if>
+            <if test="detectTime != null">#{detectTime},</if>
+            <if test="detectLocation != null">#{detectLocation},</if>
+            <if test="marketCode != null">#{marketCode},</if>
+            <if test="detectSensivity != null">#{detectSensivity},</if>
+            <if test="reagent != null">#{reagent},</if>
+            <if test="detectResult != null">#{detectResult},</if>
+            <if test="handleDuration != null">#{handleDuration},</if>
+            <if test="publishStatus != null">#{publishStatus},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="realDetectResult != null">#{realDetectResult},</if>
+            <if test="sendStatus != null">#{sendStatus},</if>
+            <if test="testValue != null">#{testValue},</if>
+            <if test="testDeviceId != null">#{testDeviceId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="handingStatus != null">#{handingStatus},</if>
+            <if test="reDetectDisposal != null">#{reDetectDisposal},</if>
+            <if test="detectUnit != null">#{detectUnit},</if>
+            <if test="state != null">#{state},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTDetect" parameterType="TDetect">
+        update t_detect
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sampleId != null">sample_id = #{sampleId},</if>
+            <if test="detectNo != null">detect_no = #{detectNo},</if>
+            <if test="inspectResult != null">inspect_result = #{inspectResult},</if>
+            <if test="sampleDeviceId != null">sample_device_id = #{sampleDeviceId},</if>
+            <if test="detectItem != null">detect_item = #{detectItem},</if>
+            <if test="detectType != null">detect_type = #{detectType},</if>
+            <if test="detectMethod != null">detect_method = #{detectMethod},</if>
+            <if test="inspector != null">inspector = #{inspector},</if>
+            <if test="detectCriteria != null">detect_criteria = #{detectCriteria},</if>
+            <if test="detectTime != null">detect_time = #{detectTime},</if>
+            <if test="detectLocation != null">detect_location = #{detectLocation},</if>
+            <if test="marketCode != null">market_code = #{marketCode},</if>
+            <if test="detectSensivity != null">detect_sensivity = #{detectSensivity},</if>
+            <if test="reagent != null">reagent = #{reagent},</if>
+            <if test="detectResult != null">detect_result = #{detectResult},</if>
+            <if test="handleDuration != null">handle_duration = #{handleDuration},</if>
+            <if test="publishStatus != null">publish_status = #{publishStatus},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="realDetectResult != null">real_detect_result = #{realDetectResult},</if>
+            <if test="sendStatus != null">send_status = #{sendStatus},</if>
+            <if test="testValue != null">test_value = #{testValue},</if>
+            <if test="testDeviceId != null">test_device_id = #{testDeviceId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="handingStatus != null">handing_status = #{handingStatus},</if>
+            <if test="reDetectDisposal != null">re_detect_disposal = #{reDetectDisposal},</if>
+            <if test="detectUnit != null">detect_unit = #{detectUnit},</if>
+            <if test="state != null">state = #{state},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTDetectById" parameterType="Long">
+        delete from t_detect where id = #{id}
+    </delete>
+
+    <delete id="deleteTDetectByIds" parameterType="Long[]">
+        delete from t_detect where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

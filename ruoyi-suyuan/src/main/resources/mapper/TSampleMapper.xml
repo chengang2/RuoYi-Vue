@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.suyuan.mapper.TSampleMapper">
+    
+    <resultMap type="TSample" id="TSampleResult">
+        <result property="id"    column="id"    />
+        <result property="sampleBatch"    column="sample_batch"    />
+        <result property="sampleNo"    column="sample_no"    />
+        <result property="taskSource"    column="task_source"    />
+        <result property="sampleSource"    column="sample_source"    />
+        <result property="sampleName"    column="sample_name"    />
+        <result property="samplePrice"    column="sample_price"    />
+        <result property="samplerId"    column="sampler_id"    />
+        <result property="distirctCode"    column="distirct_code"    />
+        <result property="marketCode"    column="market_code"    />
+        <result property="booth"    column="booth"    />
+        <result property="vendor"    column="vendor"    />
+        <result property="sampleTime"    column="sample_time"    />
+        <result property="sampleCategory"    column="sample_category"    />
+        <result property="samplePhoto"    column="sample_photo"    />
+        <result property="sampleVideo"    column="sample_video"    />
+        <result property="signPhoto"    column="sign_photo"    />
+        <result property="purchasePhoto"    column="purchase_photo"    />
+        <result property="sampler"    column="sampler"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="state"    column="state"    />
+        <result property="sampleQuantity"    column="sample_quantity"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectTSampleVo">
+        select id, sample_batch, sample_no, task_source, sample_source, sample_name, sample_price, sampler_id, distirct_code, market_code, booth, vendor, sample_time, sample_category, sample_photo, sample_video, sign_photo, purchase_photo, sampler, create_time, update_time, state, sample_quantity, remark from t_sample
+    </sql>
+
+    <select id="selectTSampleList" parameterType="TSample" resultMap="TSampleResult">
+        <include refid="selectTSampleVo"/>
+        <where>  
+            <if test="sampleBatch != null  and sampleBatch != ''"> and sample_batch = #{sampleBatch}</if>
+            <if test="sampleNo != null  and sampleNo != ''"> and sample_no = #{sampleNo}</if>
+            <if test="taskSource != null  and taskSource != ''"> and task_source = #{taskSource}</if>
+            <if test="sampleSource != null  and sampleSource != ''"> and sample_source = #{sampleSource}</if>
+            <if test="sampleName != null  and sampleName != ''"> and sample_name like concat('%', #{sampleName}, '%')</if>
+            <if test="samplePrice != null  and samplePrice != ''"> and sample_price = #{samplePrice}</if>
+            <if test="samplerId != null "> and sampler_id = #{samplerId}</if>
+            <if test="distirctCode != null  and distirctCode != ''"> and distirct_code = #{distirctCode}</if>
+            <if test="marketCode != null  and marketCode != ''"> and market_code = #{marketCode}</if>
+            <if test="booth != null  and booth != ''"> and booth = #{booth}</if>
+            <if test="vendor != null  and vendor != ''"> and vendor = #{vendor}</if>
+            <if test="sampleTime != null "> and sample_time = #{sampleTime}</if>
+            <if test="sampleCategory != null  and sampleCategory != ''"> and sample_category = #{sampleCategory}</if>
+            <if test="samplePhoto != null  and samplePhoto != ''"> and sample_photo = #{samplePhoto}</if>
+            <if test="sampleVideo != null  and sampleVideo != ''"> and sample_video = #{sampleVideo}</if>
+            <if test="signPhoto != null  and signPhoto != ''"> and sign_photo = #{signPhoto}</if>
+            <if test="purchasePhoto != null  and purchasePhoto != ''"> and purchase_photo = #{purchasePhoto}</if>
+            <if test="sampler != null  and sampler != ''"> and sampler = #{sampler}</if>
+            <if test="state != null "> and state = #{state}</if>
+            <if test="sampleQuantity != null  and sampleQuantity != ''"> and sample_quantity = #{sampleQuantity}</if>
+        </where>
+    </select>
+    
+    <select id="selectTSampleById" parameterType="Long" resultMap="TSampleResult">
+        <include refid="selectTSampleVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTSample" parameterType="TSample" useGeneratedKeys="true" keyProperty="id">
+        insert into t_sample
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sampleBatch != null">sample_batch,</if>
+            <if test="sampleNo != null">sample_no,</if>
+            <if test="taskSource != null">task_source,</if>
+            <if test="sampleSource != null">sample_source,</if>
+            <if test="sampleName != null">sample_name,</if>
+            <if test="samplePrice != null">sample_price,</if>
+            <if test="samplerId != null">sampler_id,</if>
+            <if test="distirctCode != null">distirct_code,</if>
+            <if test="marketCode != null">market_code,</if>
+            <if test="booth != null">booth,</if>
+            <if test="vendor != null">vendor,</if>
+            <if test="sampleTime != null">sample_time,</if>
+            <if test="sampleCategory != null">sample_category,</if>
+            <if test="samplePhoto != null">sample_photo,</if>
+            <if test="sampleVideo != null">sample_video,</if>
+            <if test="signPhoto != null">sign_photo,</if>
+            <if test="purchasePhoto != null">purchase_photo,</if>
+            <if test="sampler != null">sampler,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="state != null">state,</if>
+            <if test="sampleQuantity != null">sample_quantity,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sampleBatch != null">#{sampleBatch},</if>
+            <if test="sampleNo != null">#{sampleNo},</if>
+            <if test="taskSource != null">#{taskSource},</if>
+            <if test="sampleSource != null">#{sampleSource},</if>
+            <if test="sampleName != null">#{sampleName},</if>
+            <if test="samplePrice != null">#{samplePrice},</if>
+            <if test="samplerId != null">#{samplerId},</if>
+            <if test="distirctCode != null">#{distirctCode},</if>
+            <if test="marketCode != null">#{marketCode},</if>
+            <if test="booth != null">#{booth},</if>
+            <if test="vendor != null">#{vendor},</if>
+            <if test="sampleTime != null">#{sampleTime},</if>
+            <if test="sampleCategory != null">#{sampleCategory},</if>
+            <if test="samplePhoto != null">#{samplePhoto},</if>
+            <if test="sampleVideo != null">#{sampleVideo},</if>
+            <if test="signPhoto != null">#{signPhoto},</if>
+            <if test="purchasePhoto != null">#{purchasePhoto},</if>
+            <if test="sampler != null">#{sampler},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="state != null">#{state},</if>
+            <if test="sampleQuantity != null">#{sampleQuantity},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTSample" parameterType="TSample">
+        update t_sample
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sampleBatch != null">sample_batch = #{sampleBatch},</if>
+            <if test="sampleNo != null">sample_no = #{sampleNo},</if>
+            <if test="taskSource != null">task_source = #{taskSource},</if>
+            <if test="sampleSource != null">sample_source = #{sampleSource},</if>
+            <if test="sampleName != null">sample_name = #{sampleName},</if>
+            <if test="samplePrice != null">sample_price = #{samplePrice},</if>
+            <if test="samplerId != null">sampler_id = #{samplerId},</if>
+            <if test="distirctCode != null">distirct_code = #{distirctCode},</if>
+            <if test="marketCode != null">market_code = #{marketCode},</if>
+            <if test="booth != null">booth = #{booth},</if>
+            <if test="vendor != null">vendor = #{vendor},</if>
+            <if test="sampleTime != null">sample_time = #{sampleTime},</if>
+            <if test="sampleCategory != null">sample_category = #{sampleCategory},</if>
+            <if test="samplePhoto != null">sample_photo = #{samplePhoto},</if>
+            <if test="sampleVideo != null">sample_video = #{sampleVideo},</if>
+            <if test="signPhoto != null">sign_photo = #{signPhoto},</if>
+            <if test="purchasePhoto != null">purchase_photo = #{purchasePhoto},</if>
+            <if test="sampler != null">sampler = #{sampler},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="sampleQuantity != null">sample_quantity = #{sampleQuantity},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTSampleById" parameterType="Long">
+        delete from t_sample where id = #{id}
+    </delete>
+
+    <delete id="deleteTSampleByIds" parameterType="Long[]">
+        delete from t_sample where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
